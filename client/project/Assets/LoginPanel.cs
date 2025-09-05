@@ -43,7 +43,7 @@ public class LoginPanel : MonoBehaviour
     
         // 重定向到Unity日志
         Console.SetOut(new ConsoleToUnityLog());
-        Client.Instance.Init(Application.dataPath + "/gen/message_command_mapping.json");
+        Client.Instance.Init(Application.dataPath);
     }
 
     void Start()
@@ -53,15 +53,17 @@ public class LoginPanel : MonoBehaviour
 
     private void Update()
     {
-        Client.Instance.Run();
+        Client.Instance.Update(); // 逻辑刷新
     }
 
     void OnClick()
     {
         Login.s_AccountName = account.text;
         Login.s_Password = password.text;
-        Client.Instance.m_Connection.Connect(host.text);
-       // Client.Instance.Shutdown();
+        if (!Client.Instance.Connect(host.text))
+        {
+            // TODO: 提示连接失败
+        }
     }
     // Update is called once per frame
 }

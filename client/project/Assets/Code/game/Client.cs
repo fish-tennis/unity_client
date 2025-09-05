@@ -21,12 +21,17 @@ namespace cshap_client.game
     internal class Client
     {
         private static Client _instance = null;
+        // 是否使用网关模式,使用网关模式时,客户端只需要连接网关服务器,由网关服务器转发消息给后端服务器
+        // 使用网关模式时,连接登录服务器,可以不使用http
+        // 暂时强制使用网关模式
+        public static bool m_IsUseGateMode = true;
 
+        public ConnectionConfig m_ConnectionConfig;
+        public ICodec m_Codec;
         public ClientConnection m_Connection;
         public bool IsRunning = false;
         private ConcurrentQueue<string> m_InputCmds = new ConcurrentQueue<string>();
 
-        
         // 本机玩家
         public Player Player { get; set; }
 
@@ -43,48 +48,88 @@ namespace cshap_client.game
             }
         }
 
-        public void Init(string mapPath)
+        public void Init(string dataPath)
         {
             // 消息号映射
-            PacketCommandMapping.InitCommandMappingFromFile(mapPath);
+            PacketCommandMapping.InitCommandMappingFromFile(dataPath + "/cfgdata/message_command_mapping.json");
             // 注册消息回调
             HandlerRegister.RegisterMethodsForClass(typeof(Login), "");
             HandlerRegister.RegisterMethodsForPlayer();
             // 加载配置数据
-            // DataMgr.Load("cfgdata/");
-            // Helper.AfterLoad(); // 预处理配置数据
+            DataMgr.Load(dataPath + "/cfgdata/");
+            Helper.AfterLoad(); // 预处理配置数据
 
-            // 网络连接初始化
-            var connectionConfig = new ConnectionConfig
+            // 网络参数配置
+            m_ConnectionConfig = new ConnectionConfig
             {
                 RecvBufferSize = 1024 * 100,
                 RecvTimeout = 3000,
                 WriteTimeout = 3000
             };
-            var codec = new ProtoCodec();
-            connectionConfig.Codec = codec;
-            PacketCommandMapping.RegisterCodec(codec); // 自动注册所有消息
-            m_Connection = new ClientConnection(connectionConfig, 1);
+        }
+
+        // 连接服务器
+        // 如果address是127.0.0.1:10001,表示使用tcp
+        // 如果address是ws://127.0.0.1:10001/ws或wss://127.0.0.1:10001/wss,则表示使用Websocket
+        public bool Connect(string address)
+        {
+            // 根据服务器地址来自动检查是否使用websocket
+            var connectionMode = "";
+            if (address.StartsWith("ws://"))
+            {
+                connectionMode = "ws";
+            }
+            else if (address.StartsWith("wss://"))
+            {
+                connectionMode = "wss";
+            }
+            IConnection conn = null;
+            // 默认使用TcpConnection
+            if (string.IsNullOrEmpty(connectionMode) || connectionMode == "tcp")
+            {
+                m_Codec = new ProtoCodec();
+                m_ConnectionConfig.Codec = m_Codec;
+                conn = new TcpConnection(m_ConnectionConfig, 1);
+            }
+            else
+            {
+                // websocket ws/wss
+                if (connectionMode == "wss")
+                {
+                    m_ConnectionConfig.InsecureSkipVerify = true;
+                }
+                m_Codec = new SimpleProtoCodec();
+                m_ConnectionConfig.Codec = m_Codec;
+                conn = new WsConnection(m_ConnectionConfig, 1);
+            }
+            PacketCommandMapping.RegisterCodec(m_Codec); // 自动注册所有消息
+            m_Connection = new ClientConnection(conn);
             IsRunning = true;
+            return m_Connection.m_Connection.Connect(address);
+        }
+
+        public void Update()
+        {
+            m_Connection?.ProcessPackets();
+            m_Connection?.AutoPing();
         }
 
         public void Run()
         {
-            if (IsRunning)
+            while (IsRunning)
             {
-                m_Connection.AutoPing();
                 if (m_InputCmds.TryDequeue(out string cmd))
                 {
                     OnCommand(cmd);
                 }
-                m_Connection.ProcessPackets();
+                Update();
                 Thread.Sleep(50);
             }
         }
 
         public void Shutdown()
         {
-            m_Connection.Close();
+            m_Connection?.m_Connection.Close();
         }
 
         // 从其他线程收到cmd
