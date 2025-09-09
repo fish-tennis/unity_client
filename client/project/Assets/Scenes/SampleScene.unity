@@ -918,7 +918,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 2
-  m_Text: "\u5982\u679C\u670D\u52A1\u5668\u5730\u5740\u662F127.0.0.1:10001 \u5C31\u4F7F\u7528Tcp\u6A21\u5F0F\n\u5982\u679C\u670D\u52A1\u5668\u5730\u5740ws://127.0.0.1:10001/ws,\u5219\u8868\u793A\u4F7F\u7528Websocket"
+  m_Text: "\u5982\u679C\u670D\u52A1\u5668\u5730\u5740\u662F127.0.0.1:10001 \u5C31\u4F7F\u7528Tcp\u6A21\u5F0F\n\u5982\u679C\u670D\u52A1\u5668\u5730\u5740ws://127.0.0.1:8080/ws,\u5219\u8868\u793A\u4F7F\u7528Websocket"
 --- !u!222 &920896856
 CanvasRenderer:
   m_ObjectHideFlags: 0
