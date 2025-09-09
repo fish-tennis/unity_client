@@ -561,6 +561,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 4792796979855655856, guid: b95d21f1667443842a096ddaed2002b2,
+        type: 3}
+      propertyPath: m_Text
+      value: "\u5982\u679C\u670D\u52A1\u5668\u5730\u5740\u662F127.0.0.1:10001 \u5C31\u4F7F\u7528Tcp\u6A21\u5F0F\n\u5982\u679C\u670D\u52A1\u5668\u5730\u5740ws://127.0.0.1:8080/ws,\u5219\u8868\u793A\u4F7F\u7528Websocket"
+      objectReference: {fileID: 0}
     - target: {fileID: 7306543604465431792, guid: b95d21f1667443842a096ddaed2002b2,
         type: 3}
       propertyPath: m_Pivot.x
