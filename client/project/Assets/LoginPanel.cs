@@ -9,6 +9,7 @@ public class LoginPanel : MonoBehaviour
     public InputField host;
     public InputField account;
     public InputField password;
+    public Text Text_Error;
 
     public Button btn;
     
@@ -21,6 +22,10 @@ public class LoginPanel : MonoBehaviour
     void Start()
     {
         btn.onClick.AddListener(OnClick);
+        Login.LoginTipAction = (tip) =>
+        {
+            Text_Error.text = tip;
+        };
     }
 
     private void Update()
@@ -32,9 +37,10 @@ public class LoginPanel : MonoBehaviour
     {
         Login.s_AccountName = account.text;
         Login.s_Password = password.text;
+        Text_Error.text = "connecting to " + host.text;
         if (!Client.Instance.Connect(host.text))
         {
-            // TODO: 提示连接失败
+            Text_Error.text = "连接失败";
         }
     }
     // Update is called once per frame

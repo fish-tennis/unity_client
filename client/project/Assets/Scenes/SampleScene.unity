@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.6886792, g: 0.18516374, b: 0.18516374, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -447,10 +447,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 0
     m_AlignByGeometry: 0
@@ -478,6 +478,7 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
+  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -559,6 +560,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &963194229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12a954cd31d76a43b9b8421668f80b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1564444823
 GameObject:
   m_ObjectHideFlags: 0
@@ -665,6 +678,11 @@ PrefabInstance:
       propertyPath: m_Text
       value: "\u5982\u679C\u670D\u52A1\u5668\u5730\u5740\u662F127.0.0.1:10001 \u5C31\u4F7F\u7528Tcp\u6A21\u5F0F\n\u5982\u679C\u670D\u52A1\u5668\u5730\u5740ws://127.0.0.1:8080/ws,\u5219\u8868\u793A\u4F7F\u7528Websocket"
       objectReference: {fileID: 0}
+    - target: {fileID: 5092098262158391209, guid: b95d21f1667443842a096ddaed2002b2,
+        type: 3}
+      propertyPath: Text_Error
+      value: 
+      objectReference: {fileID: 749069261}
     - target: {fileID: 7306543604465431792, guid: b95d21f1667443842a096ddaed2002b2,
         type: 3}
       propertyPath: m_Pivot.x

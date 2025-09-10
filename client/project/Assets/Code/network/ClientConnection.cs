@@ -28,9 +28,10 @@ namespace cshap_client.network
             m_Connection.OnClose = onClose;
         }
 
+        // NOTE: 在网络线程中执行,不要调用unity的接口!!!
         private void onConnected(IConnection connection, bool success)
         {
-            Console.WriteLine("onConnected success:" + success);
+            // Console.WriteLine("onConnected success:" + success);
             if(Client.Instance.Player == null && !string.IsNullOrEmpty(Login.s_AccountName))
             {
                 // 自动账号登录
@@ -38,9 +39,10 @@ namespace cshap_client.network
             }
         }
 
+        // NOTE: 在网络线程中执行,不要调用unity的接口!!!
         private void onClose(IConnection connection)
         {
-            Console.WriteLine("onClose");
+            // Console.WriteLine("onClose");
         }
 
         // 发protobuf消息,会自动查找对应的消息号
@@ -56,6 +58,10 @@ namespace cshap_client.network
 
         public void AutoPing()
         {
+            if (m_Connection == null || !m_Connection.IsConnected())
+            {
+                return;
+            }
             long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             if (now - m_LastPingTimestamp >= PingInterval)
             {
@@ -64,7 +70,6 @@ namespace cshap_client.network
                 {
                     Timestamp = now,
                 });
-                //Console.WriteLine("AutoPing:" + now);
             }
         }
         

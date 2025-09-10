@@ -105,7 +105,10 @@ namespace cshap_client.cfg
             foreach (var kvp in DataMgr.Quests)
             {
                 kvp.Value.Conditions.AddRange(convertConditionCfgs(kvp.Value.ConditionTemplates));
-                kvp.Value.Progress = convertProgressCfg(kvp.Value.ProgressTemplate);
+                if (kvp.Value.ProgressTemplate != null)
+                {
+                    kvp.Value.Progress = convertProgressCfg(kvp.Value.ProgressTemplate);
+                }
             }
         }
         

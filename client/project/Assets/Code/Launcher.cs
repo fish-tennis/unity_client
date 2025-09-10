@@ -32,6 +32,7 @@ public class Launcher : MonoBehaviour
     private void Awake()
     {
         Console.SetOut(new ConsoleToUnityLog());
+        Debug.Log("Launcher Awake");
         Client.Instance.Init(Application.dataPath);
     }
 

@@ -16,6 +16,8 @@ namespace cshap_client.game
         public static string s_AccountName;
         public static string s_Password;
         private static Gserver.LoginRes s_LoginRes;
+        
+        public static Action<string> LoginTipAction; // 登录界面提示回调接口
 
         // 账号协议不要发明文密码,而且要加一些混淆词,防止被"撞库"
         public static string GetMd5Password(string password)
@@ -39,6 +41,7 @@ namespace cshap_client.game
         // 自动账号登录
         public static void AutoLogin()
         {
+            // LoginTipAction?.Invoke("auto login");
             Client.Send(new Gserver.LoginReq
             {
                 AccountName = Login.s_AccountName,
@@ -55,6 +58,7 @@ namespace cshap_client.game
                 Console.WriteLine("register a new account");
                 if (!string.IsNullOrEmpty(s_AccountName))
                 {
+                    LoginTipAction?.Invoke("auto register a new account");
                     // 自动注册
                     Client.Send(new Gserver.AccountReg
                     {
@@ -62,9 +66,14 @@ namespace cshap_client.game
                         Password = Login.GetMd5Password(Login.s_Password),
                     });
                 }
+                else
+                {
+                    LoginTipAction?.Invoke("you need register a new account");
+                }
             }
             else if(err == 0)
             {
+                LoginTipAction?.Invoke("login success, ready to enter game");
                 s_LoginRes = res;
                 Client.Instance.Player = null;
                 // 账号登录成功,自动进游戏服,假设没有选区服的流程
@@ -74,6 +83,10 @@ namespace cshap_client.game
                     RegionId = 1,
                 });
                 // TODO: 非网关模式,需要断开和登录服的连接,重新建立和游戏服的连接
+            }
+            else
+            {
+                LoginTipAction?.Invoke("login err:" + err);
             }
         }
 
@@ -89,8 +102,12 @@ namespace cshap_client.game
                 }
                 else
                 {
-                    Console.WriteLine("create a new account,try login again");
+                    Console.WriteLine("reg account ok, you need to login");
                 }
+            }
+            else
+            {
+                LoginTipAction?.Invoke("account err:" + err);
             }
         }
 
@@ -101,6 +118,7 @@ namespace cshap_client.game
             if (err == (int)Gserver.ErrorCode.NoPlayer)
             {
                 Console.WriteLine("create a new player");
+                LoginTipAction?.Invoke("auto create a new player");
                 // 自动创建一个角色名=账号名的角色,如果创建失败,就需要手动创建了
                 Client.Send(new Gserver.CreatePlayerReq
                 {
@@ -115,6 +133,7 @@ namespace cshap_client.game
             else if (err == (int)Gserver.ErrorCode.TryLater)
             {
                 // TODO: 延迟几秒后,再尝试登录
+                LoginTipAction?.Invoke("entry game failed, try entry later");
             }
             else if (err == 0)
             {
@@ -126,6 +145,11 @@ namespace cshap_client.game
                 player.InitComponents();
                 Client.Instance.Player = player;
                 Console.WriteLine("entry game id:" + player.GetId() + " name:" + player.Name);
+                // TODO: 切换到游戏主界面
+            }
+            else
+            {
+                LoginTipAction?.Invoke("entry game err:" + err);
             }
         }
 
@@ -135,6 +159,7 @@ namespace cshap_client.game
             Console.WriteLine("OnCreatePlayerRes:" + res + " err:" + err);
             if (err == 0)
             {
+                LoginTipAction?.Invoke("create player ok, auto entry");
                 // 创建了新角色,自动登录
                 Client.Send(new Gserver.PlayerEntryGameReq
                 {
@@ -142,6 +167,10 @@ namespace cshap_client.game
                     LoginSession = s_LoginRes.LoginSession,
                     RegionId = 1,
                 });
+            }
+            else
+            {
+                LoginTipAction?.Invoke("create player err:" + err);
             }
         }
 
