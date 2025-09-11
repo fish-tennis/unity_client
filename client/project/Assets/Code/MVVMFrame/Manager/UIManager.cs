@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using cshap_client.network;
 using UnityEngine;
 
 public class UIManager
@@ -25,9 +26,16 @@ public class UIManager
         return CreateModel<T>();
     }
 
+    public ModelBase GetModelByType(Type type)
+    {
+        return modelDict.ContainsKey(type) ? modelDict[type] : null;
+    }
+
     public T CreateModel<T>() where T : ModelBase, new()
     {
         T model = new T();
+        Debug.Log("CreateModel:" + model.GetType().Name +" typeof(T):" + typeof(T).Name);
+        HandlerRegister.RegisterMethodsForClass(model.GetType(), "");
         model.Initialization();
         modelDict.Add(typeof(T), model);
         

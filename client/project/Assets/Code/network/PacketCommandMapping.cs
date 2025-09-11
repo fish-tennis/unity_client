@@ -86,7 +86,7 @@ namespace cshap_client.network
                     {
                         _messageTypeCmdMapping[messageType] = messageId;
                         _cmdMessageMapping[messageId] = messageDescriptor;
-                        Console.WriteLine("CommandMapping msg:{0} id:{1}", messageName, messageId);
+                        //Console.WriteLine("CommandMapping msg:{0} id:{1}", messageName, messageId);
                     }
                 }
                 catch (Exception ex)

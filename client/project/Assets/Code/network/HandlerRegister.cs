@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 
 namespace cshap_client.network
 {
@@ -16,7 +17,11 @@ namespace cshap_client.network
         public MethodInfo Method;
         public bool IsPlayer; // 玩家的消息回调
         public string ComponentName; // 玩家组件名,为空表示是Player类
+        public Type ViewModelType; // MVVM的ViewModel的Type,用于UI层注册消息回调
+
+        public MethodData Next; // 链表,同一个消息可以注册多个回调
     }
+    
     // 消息回调注册
     internal class HandlerRegister
     {
@@ -83,8 +88,21 @@ namespace cshap_client.network
                 {
                     methodData.IsPlayer = true;
                 }
-                m_Handlers.Add(messageParamInfo.ParameterType, methodData);
-                Console.WriteLine("RegisterHandler:" + method.Name + " message:" + messageName + " component:" + methodData.ComponentName);
+                if (IsSubclassOfRawGeneric(type, typeof(ViewModelBase<>)))
+                {
+                    methodData.IsPlayer = false;
+                    methodData.ViewModelType = type;
+                }
+                if (m_Handlers.TryGetValue(messageParamInfo.ParameterType, out var handler))
+                {
+                    handler.Next = methodData;
+                }
+                else
+                {
+                    m_Handlers.Add(messageParamInfo.ParameterType, methodData);
+                }
+                Console.WriteLine("RegisterHandler:" + method.Name + " message:" + messageName + " component:" + methodData.ComponentName
+                                  + " ViewModelType:" + methodData.ViewModelType);
             }
         }
 
@@ -101,60 +119,100 @@ namespace cshap_client.network
                 RegisterMethodsForClass(component.GetType(), component.GetName());
             });
         }
+        
+        // 检查是否继承于某个泛型类
+        public static bool IsSubclassOfRawGeneric(Type type, Type genericBase)
+        {
+            if (type == null || genericBase == null)
+                return false;
+
+            // 遍历类型继承链
+            while (type != null && type != typeof(object))
+            {
+                // 检查当前类型是否为泛型类型并与目标泛型定义匹配
+                var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
+                if (genericBase == cur)
+                    return true;
+
+                // 继续检查基类
+                type = type.BaseType;
+            }
+
+            return false;
+        }
 
         public static bool OnRecvPacket(IPacket packet, Player player)
         {
             var message = packet.Message();
-            try
+            if (!m_Handlers.ContainsKey(message.GetType()))
             {
-                if ( !m_Handlers.ContainsKey(message.GetType()))
+                return false;
+            }
+            var methodData = m_Handlers[message.GetType()];
+            if (methodData == null)
+            {
+                Console.WriteLine("not find method, message" + message.GetType().Name);
+                return false;
+            }
+            while (methodData != null)
+            {
+                try
                 {
-                    return false;
-                }
-                var methodData = m_Handlers[message.GetType()];
-                if (methodData == null)
-                {
-                    Console.WriteLine("not find method, message" + message.GetType().Name);
-                    return false;
-                }
-                object[] parameters = new object[] { message };
-                var method = methodData.Method;
-                if (method.GetParameters().Length == 2)
-                {
-                    parameters = new object[] { message, (int)packet.ErrorCode() };
-                }
-                if (method.IsStatic)
-                {
-                    method.Invoke(null, parameters); // 静态函数
-                }
-                else
-                {
-                    // 非静态函数,是玩家类或玩家组件上的成员函数
-                    if (!methodData.IsPlayer)
+                    object[] parameters = new object[] { message };
+                    var method = methodData.Method;
+                    if (method.GetParameters().Length == 2)
                     {
-                        return false;
+                        parameters = new object[] { message, (int)packet.ErrorCode() };
                     }
-                    if (string.IsNullOrEmpty(methodData.ComponentName))
+                    if (method.IsStatic)
                     {
-                        method.Invoke(player, parameters); // 玩家类上的成员函数
+                        method.Invoke(null, parameters); // 静态函数
                     }
                     else
                     {
-                        var componet = player.GetComponentByName(methodData.ComponentName);
-                        if (componet == null)
+                        // 非静态函数,是玩家类或玩家组件或ViewModel上的成员函数
+                        // 玩家或玩家组件上的成员函数
+                        if (methodData.IsPlayer)
                         {
-                            Console.WriteLine("not find componet, message" + message.GetType().Name + " componet:" + methodData.ComponentName);
-                            return false;
+                            if (string.IsNullOrEmpty(methodData.ComponentName))
+                            {
+                                method.Invoke(player, parameters); // 玩家类上的成员函数
+                            }
+                            else
+                            {
+                                var componet = player.GetComponentByName(methodData.ComponentName);
+                                if (componet == null)
+                                {
+                                    Console.WriteLine("not find component, message" + message.GetType().Name + " component:" + methodData.ComponentName);
+                                    return false;
+                                }
+                                method.Invoke(componet, parameters); // 玩家组件上的成员函数
+                            } 
                         }
-                        method.Invoke(componet, parameters); // 玩家组件上的成员函数
+                        else
+                        {
+                            // ViewModel上的回调
+                            if (methodData.ViewModelType == null)
+                            {
+                                Console.WriteLine("not find ViewModel, message" + message.GetType().Name);
+                                return false;
+                            }
+                            var viewModelObj = UIManager.Instance.GetModelByType(methodData.ViewModelType);
+                            if (viewModelObj == null)
+                            {
+                                Console.WriteLine("not find ViewModel, message" + message.GetType().Name + " ViewModelType:" + methodData.ViewModelType);
+                                return false;
+                            }
+                            method.Invoke(viewModelObj, parameters);
+                        }
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // TODO: 上报错误给服务器,因为服务器查看日志比较方便
-                Console.WriteLine("OnRecvPacketErr: message" + message.GetType().Name + " ex:" + ex.Message);
-                return false;
+                catch (Exception e)
+                {
+                    Console.WriteLine("OnRecvPacketErr: message" + message.GetType().Name + " e:" + e.Message);
+                    throw;
+                }
+                methodData = methodData.Next;
             }
             return true;
         }

@@ -1,5 +1,8 @@
 ﻿using System;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using Client = cshap_client.game.Client;
+
 public class TestViewModel : ViewModelBase<TestModel>
 {
     public BindableProperty<Color> Color = new BindableProperty<Color>(UnityEngine.Color.white);
@@ -26,14 +29,23 @@ public class TestViewModel : ViewModelBase<TestModel>
 public class TestModel : ModelBase
 {
     public BindableProperty<long> SeverTime = new BindableProperty<long>(0);
+    public BindableProperty<Gserver.BaseInfo> BaseInfo = new BindableProperty<Gserver.BaseInfo>(null);
 
     public override void OnInitialization()
     {
-        //添加网络消息监听,接收数据
+        Debug.Log("TestModel.OnInitialization");
+        BaseInfo.Value = Client.Instance.Player.BaseInfo.data;
     }
 
-    public void OnCommond_SetTime(long time)
+    public void OnCommand_SetTime(long time)
     {
         SeverTime.Value = time;
+    }
+    
+    // 同步玩家基础信息
+    public void OnBaseInfoSync(Gserver.BaseInfoSync res)
+    {
+        Debug.Log("TestViewModel.OnBaseInfoSync");
+        BaseInfo.Value = res.Data;
     }
 }

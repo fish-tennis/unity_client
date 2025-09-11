@@ -29,13 +29,14 @@ public abstract class ViewBase<T, T2> : MonoBehaviour where T : ViewModelBase<T2
     public virtual void BindProperty()
     {
 #if UNITY_EDITOR
+        // T是ViewModel
         foreach (var field in typeof(T).GetFields())
         {
             if (field.FieldType.GenericTypeArguments.Length == 1)
             {
                 var agrtype = field.FieldType.GenericTypeArguments[0];
                 var tType = typeof(BindableProperty<>).MakeGenericType(agrtype);
-                if (field.FieldType == tType)
+                if (field.FieldType == tType) // 如BindableProperty<Arg>
                 {
                     var method = GetType().GetMethod($"OnChanged_{field.Name}", new Type[] {agrtype, agrtype});
                     if (method != null)
@@ -43,6 +44,8 @@ public abstract class ViewBase<T, T2> : MonoBehaviour where T : ViewModelBase<T2
                         var bindVal = field.GetValue(_viewModel);
                         var ovc = field.FieldType.GetField("OnValueChanged");
                         var dmethod = Delegate.CreateDelegate(ovc.FieldType, this, method);
+                        // 注入BindableProperty<Arg>.OnValueChanged
+                        // 当对BindableProperty<Arg>.Value赋值时,会触发ViewModel上的OnChanged_{field.Name}函数
                         ovc.SetValue(bindVal, dmethod);
                     }
                 }
@@ -75,6 +78,13 @@ public abstract class ViewBase<T, T2> : MonoBehaviour where T : ViewModelBase<T2
 #endif
     }
 
+    // 绑定消息回调
+    public virtual void BindPacketHandler()
+    {
+        
+    }
+    
+
     public virtual void OnInitialize()
     {
     }
@@ -97,10 +107,11 @@ public abstract class ViewBase<T, T2> : MonoBehaviour where T : ViewModelBase<T2
     {
     }
 
-    public virtual void SendCommond(string name, object[] arg = null)
+    // 调用Model的OnCommond_SetXxx函数
+    public virtual void SendCommand(string name, object[] arg = null)
     {
 #if UNITY_EDITOR
-        name = "OnCommond_" + name;
+        name = "OnCommand_" + name;
         foreach (var method in typeof(T2).GetMethods())
         {
             if (method.Name == name)
@@ -112,12 +123,12 @@ public abstract class ViewBase<T, T2> : MonoBehaviour where T : ViewModelBase<T2
 #endif
     }
 
-    public virtual void SendCommond<T1>(string name,T1 arg)
+    public virtual void SendCommand<T1>(string name,T1 arg)
     {
         if (name == "SetTime")
         {
             var model = _viewModel._model as TestModel;
-            model.OnCommond_SetTime(1);
+            model.OnCommand_SetTime(1);
         }
     }
     

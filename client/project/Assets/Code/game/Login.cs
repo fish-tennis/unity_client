@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace cshap_client.game
 {
@@ -145,7 +146,8 @@ namespace cshap_client.game
                 player.InitComponents();
                 Client.Instance.Player = player;
                 Console.WriteLine("entry game id:" + player.GetId() + " name:" + player.Name);
-                // TODO: 切换到游戏主界面
+                // 切换到游戏主界面
+                SceneManager.LoadScene("main_ui");
             }
             else
             {
