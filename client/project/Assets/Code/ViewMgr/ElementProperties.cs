@@ -26,7 +26,7 @@ namespace Code.ViewMgr
         // 更新显示
         public void UpdateShow()
         {
-            Debug.Log("UpdateShow:" + gameObject.name);
+            Debug.Log("UpdateShow:" + gameObject.name + " " + PropertyName + " " + this.Format);
             // 先写死代码,实际是注册不同的控件不同的显示逻辑
             if (!gameObject.activeSelf)
             {
@@ -37,13 +37,15 @@ namespace Code.ViewMgr
             var text = gameObject.GetComponent<Text>();
             if (text != null)
             {
+                var propertyValue = GetPropertyValue(PropertyName);
+                Debug.Log("UpdateShow:" + gameObject.name + " propertyValue:" + propertyValue);
                 if (string.IsNullOrEmpty(this.Format))
                 {
-                    text.text = GetPropertyValue(PropertyName).ToString();
+                    text.text = propertyValue.ToString();
                 }
                 else
                 {
-                    text.text = string.Format(this.Format, GetPropertyValue(PropertyName));
+                    text.text = string.Format(this.Format, propertyValue);
                 }
             }
         }
