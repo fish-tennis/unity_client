@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using cshap_client.cfg;
 using Gserver;
 
+class UIsHOW
+{
+    public List<object> list;
+    
+}
+
+
 namespace cshap_client.game
 {
     // 背包模块

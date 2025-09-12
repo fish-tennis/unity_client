@@ -3,6 +3,7 @@
 namespace cshap_client.game
 {
     using PlayerPropertyGetter = System.Func<Player, string, int>;
+    using PlayerPropertyGetterString = System.Func<Player, string, string>;
     
     public static class PlayerProperty
     {
@@ -12,8 +13,14 @@ namespace cshap_client.game
         public static Dictionary<string,PlayerPropertyGetter> Getters = new Dictionary<string, PlayerPropertyGetter>
         {
             {"Level",(player,_)=> player.BaseInfo.data.Level}, // 等级
+            {"Exp",(player,_)=> player.BaseInfo.data.Exp}, // 等级
             {"TotalPay",(player,_)=> player.BaseInfo.data.TotalPay}, // 总支付金额
             {"FinishQuestCount",(player,_)=> player.GetQuest().Finished.Count}, // 完成任务数量
+        };
+        
+        public static Dictionary<string,PlayerPropertyGetterString> StringGetters = new Dictionary<string, PlayerPropertyGetterString>
+        {
+            {"Name",(player,_)=> player.Name}, // 玩家名
         };
     }
 }

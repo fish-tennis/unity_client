@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 namespace cshap_client.network
 {
@@ -17,7 +18,6 @@ namespace cshap_client.network
         public MethodInfo Method;
         public bool IsPlayer; // 玩家的消息回调
         public string ComponentName; // 玩家组件名,为空表示是Player类
-        public Type ViewModelType; // MVVM的ViewModel的Type,用于UI层注册消息回调
 
         public MethodData Next; // 链表,同一个消息可以注册多个回调
     }
@@ -88,21 +88,15 @@ namespace cshap_client.network
                 {
                     methodData.IsPlayer = true;
                 }
-                if (IsSubclassOfRawGeneric(type, typeof(ViewModelBase<>)))
+                if (m_Handlers.TryGetValue(messageParamInfo.ParameterType, out var existMethodData))
                 {
-                    methodData.IsPlayer = false;
-                    methodData.ViewModelType = type;
-                }
-                if (m_Handlers.TryGetValue(messageParamInfo.ParameterType, out var handler))
-                {
-                    handler.Next = methodData;
+                    existMethodData.Next = methodData;
                 }
                 else
                 {
                     m_Handlers.Add(messageParamInfo.ParameterType, methodData);
                 }
-                Console.WriteLine("RegisterHandler:" + method.Name + " message:" + messageName + " component:" + methodData.ComponentName
-                                  + " ViewModelType:" + methodData.ViewModelType);
+                Debug.Log("RegisterHandler:" + method.Name + " message:" + messageName + " type:" + type.Name);
             }
         }
 
@@ -125,7 +119,6 @@ namespace cshap_client.network
         {
             if (type == null || genericBase == null)
                 return false;
-
             // 遍历类型继承链
             while (type != null && type != typeof(object))
             {
@@ -133,14 +126,13 @@ namespace cshap_client.network
                 var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
                 if (genericBase == cur)
                     return true;
-
                 // 继续检查基类
                 type = type.BaseType;
             }
-
             return false;
         }
 
+        // 收到消息,调用注册的回调
         public static bool OnRecvPacket(IPacket packet, Player player)
         {
             var message = packet.Message();
@@ -191,26 +183,13 @@ namespace cshap_client.network
                         }
                         else
                         {
-                            // ViewModel上的回调
-                            if (methodData.ViewModelType == null)
-                            {
-                                Console.WriteLine("not find ViewModel, message" + message.GetType().Name);
-                                return false;
-                            }
-                            var viewModelObj = UIManager.Instance.GetModelByType(methodData.ViewModelType);
-                            if (viewModelObj == null)
-                            {
-                                Console.WriteLine("not find ViewModel, message" + message.GetType().Name + " ViewModelType:" + methodData.ViewModelType);
-                                return false;
-                            }
-                            method.Invoke(viewModelObj, parameters);
+                            return false;
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("OnRecvPacketErr: message" + message.GetType().Name + " e:" + e.Message);
-                    throw;
                 }
                 methodData = methodData.Next;
             }

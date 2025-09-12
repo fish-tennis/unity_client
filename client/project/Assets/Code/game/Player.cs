@@ -71,6 +71,25 @@ namespace cshap_client.game
             return PlayerProperty.Getters.TryGetValue(property, out var getter) ? getter(this, property) : 0;
         }
         
+        public string GetPropertyString(string property)
+        {
+            return PlayerProperty.StringGetters.TryGetValue(property, out var getter) ? getter(this, property) :"";
+        }
+        
+        // 获取玩家属性,不区分int32和string,如果没找到会返回null
+        public object GetProperty(string property)
+        {
+            if (PlayerProperty.Getters.TryGetValue(property, out var getter))
+            {
+                return getter(this, property);
+            }
+            if (PlayerProperty.StringGetters.TryGetValue(property, out var stringGetter))
+            {
+                return stringGetter(this, property);
+            }
+            return null;
+        }
+        
         public bool Send(IMessage message)
         {
             return Client.Instance.m_Connection != null && Client.Instance.m_Connection.Send(message);
