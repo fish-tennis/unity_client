@@ -29,27 +29,33 @@ namespace Code.ViewMgr
         
         public void AddElement(ElementProperties element)
         {
-            if (m_Elements.TryGetValue(element.PropertyName, out var list))
+            foreach (var property in element.GetFormatInfo().Properties)
             {
-                list.Add(element);
+                if (m_Elements.TryGetValue(property.Property, out var list))
+                {
+                    list.Add(element);
+                }
+                else
+                {
+                    m_Elements.Add(property.Property, new List<ElementProperties>() { element });
+                    Debug.Log("AddElement:" + element.name + " "  + property.Property);
+                }
             }
-            else
-            {
-                m_Elements.Add(element.PropertyName, new List<ElementProperties>() { element });
-            }
-            Debug.Log("AddElement:" + element.name);
         }
 
         public void RemoveElement(ElementProperties element)
         {
-            if (m_Elements.TryGetValue(element.PropertyName, out var list))
+            foreach (var property in element.GetFormatInfo().Properties)
             {
-                list.Remove(element);
-                if(list.Count == 0)
+                if (m_Elements.TryGetValue(property.Property, out var list))
                 {
-                    m_Elements.Remove(element.PropertyName);
-                }
-                Debug.Log("RemoveElement:" + element.name);
+                    list.Remove(element);
+                    if(list.Count == 0)
+                    {
+                        m_Elements.Remove(property.Property);
+                    }
+                    Debug.Log("RemoveElement:" + element.name + " "  + property.Property);
+                } 
             }
         }
 

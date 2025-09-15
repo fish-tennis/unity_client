@@ -20,10 +20,20 @@ namespace Code.views.MainView
                 Debug.LogError("cmd is empty");
                 return;
             }
-            Client.Send(new Gserver.TestCmd
+            if (cmd[0] == '@')
             {
-                Cmd = cmd,
-            });
+                if(Client.Send(new Gserver.TestCmd
+                {
+                    Cmd = cmd[1..],
+                }))
+                {
+                    InputField_Cmd.text = "@";
+                }
+            }
+            else
+            {
+                Debug.LogError("test cmd must start with @");
+            }
         }
     }
 }

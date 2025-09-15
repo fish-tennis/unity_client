@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Code.ViewMgr
@@ -9,6 +10,10 @@ namespace Code.ViewMgr
         public void Awake()
         {
             ViewMgr.Instance.AddView(this);
+        }
+
+        public void Start()
+        {
             // View上所有的绑定了ElementProperties的控件初始化显示
             var scripts = this.gameObject.GetComponentsInChildren<ElementProperties>(true);
             foreach (var script in scripts)

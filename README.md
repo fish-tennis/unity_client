@@ -9,10 +9,10 @@ unity client for [gserver](https://github.com/fish-tennis/gserver)
 - 配置数据管理模块
 - 采用Entity-Component设计,模块解耦
 - 通用且扩展性强的条件接口
-- 任务模块,演示了如何实现一个通用且扩展性强的任务系统[设计文档](/Design_Quest.md)
-- 兑换模块,演示了如何实现一个通用且扩展性强的兑换功能
-- 活动模块,演示了如何设计一个通用且支持扩展的活动模块
-- 背包模块,演示了如何设计一个通用且支持扩展的容器模块
+- [开发中]任务模块,演示了如何实现一个通用且扩展性强的任务系统[设计文档](/Design_Quest.md)
+- [开发中]兑换模块,演示了如何实现一个通用且扩展性强的兑换功能
+- [开发中]活动模块,演示了如何设计一个通用且支持扩展的活动模块
+- [开发中]背包模块,演示了如何设计一个通用且支持扩展的容器模块
 
 ## 测试命令(GM命令)
 控制台输入字符串以@开头 表示向服务器发送测试命令,如
@@ -35,6 +35,9 @@ gserver目前支持的测试命令: https://github.com/fish-tennis/gserver/blob/
 https://github.com/fish-tennis/gserver
 - 配置表及导表工具: gserver/excel
 - proto及生成工具: gserver/proto
+
+## unity版本
+演示代码用的Unity2022.3.6
 
 ## 其他版本的客户端
 - c#控制台客户端[cshap_client](https://github.com/fish-tennis/cshap_client)
