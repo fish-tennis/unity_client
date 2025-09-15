@@ -1,14 +1,9 @@
-﻿using Gserver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 登录阶段的逻辑(玩家选择角色进入游戏服之前)
     internal class Login

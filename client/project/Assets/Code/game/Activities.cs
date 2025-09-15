@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 活动的集合组件
     public class Activities : BasePlayerComponent

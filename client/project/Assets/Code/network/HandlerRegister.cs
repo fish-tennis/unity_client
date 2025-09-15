@@ -1,5 +1,4 @@
-﻿using cshap_client.game;
-using gnet_csharp;
+﻿using gnet_csharp;
 using Google.Protobuf;
 using System;
 using System.Collections;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Code.game;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 

@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using cshap_client.game;
+using Code.game;
 using gnet_csharp;
 using Google.Protobuf;
 

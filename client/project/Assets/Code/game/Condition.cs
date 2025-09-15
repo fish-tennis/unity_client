@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using ConditionCheckFunc = System.Func<object, Gserver.ConditionCfg, bool>;
 
-namespace cshap_client.game
+namespace Code.game
 {
     public static class Condition
     {

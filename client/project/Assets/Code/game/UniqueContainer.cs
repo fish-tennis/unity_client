@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
-using Gserver;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 通用的不可叠加的物品容器(如装备背包或限时道具背包)
     // 不同的实现类,配置不同的解析函数,CfgId,UniqueId的函数即可

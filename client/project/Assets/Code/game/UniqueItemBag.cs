@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 不可叠加的普通物品背包(如限时道具)
     // Gserver.UniqueCountItem的背包的实现类

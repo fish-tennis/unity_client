@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Google.Protobuf;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 实体
     public interface IEntity

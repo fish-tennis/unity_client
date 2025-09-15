@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using cshap_client.cfg;
+using Code.cfg;
 using Gserver;
 
-class UIsHOW
-{
-    public List<object> list;
-    
-}
-
-
-namespace cshap_client.game
+namespace Code.game
 {
     // 背包模块
     // 演示整合多个不同的子背包模块,提供更高一级的背包接口

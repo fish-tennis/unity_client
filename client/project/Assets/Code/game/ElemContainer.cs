@@ -1,6 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-
-namespace cshap_client.game
+﻿namespace Code.game
 {
     // 容器通用操作接口(例如背包就是一种容器)
     public interface IElemContainer

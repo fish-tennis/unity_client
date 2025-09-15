@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using Google.Protobuf.Collections;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 有数量的容器(如常见的道具背包,每个格子只需要记录一个配置id和数量即可)
     public class CountContainer : IElemContainer

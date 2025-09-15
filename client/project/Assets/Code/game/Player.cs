@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Google.Protobuf;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 玩家对象
     public class Player : BaseEntity, IPropertyInt32

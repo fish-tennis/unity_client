@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace cshap_client.game
+namespace Code.game
 {
     using ActivityPropertyGetter = System.Func<Activity, string, int>;
     

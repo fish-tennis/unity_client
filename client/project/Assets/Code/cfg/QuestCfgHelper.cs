@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using cshap_client.game;
 
-namespace cshap_client.cfg
+namespace Code.cfg
 {
     using QuestDict = Dictionary<int, Gserver.QuestCfg>;
     

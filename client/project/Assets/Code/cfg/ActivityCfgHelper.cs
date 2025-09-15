@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace cshap_client.cfg
+namespace Code.cfg
 {
     // 活动相关配置预处理
     public static class ActivityCfgHelper

@@ -1,5 +1,5 @@
-﻿using Code.ViewMgr;
-using cshap_client.game;
+﻿using Code.game;
+using Code.ViewMgr;
 using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UIElements.Button;
@@ -34,6 +34,13 @@ namespace Code.views.MainView
             {
                 Debug.LogError("test cmd must start with @");
             }
+        }
+
+        // 切换到任务界面
+        public void OnClickQuest()
+        {
+            gameObject.SetActive(false);
+            gameObject.transform.parent.Find("QuestView").gameObject.SetActive(true);
         }
     }
 }

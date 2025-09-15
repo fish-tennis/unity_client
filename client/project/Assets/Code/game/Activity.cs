@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using cshap_client.cfg;
+using Code.cfg;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 单个活动的实现,所有活动使用同一个类来实现
     // 差异化部分通过动态属性和自定义回调来处理

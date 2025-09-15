@@ -1,6 +1,5 @@
 ﻿using System;
-
-using cshap_client.game;
+using Code.game;
 using UnityEngine;
 using UnityEngine.UI;
 

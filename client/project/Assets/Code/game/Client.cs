@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using cshap_client.cfg;
+using Code.cfg;
 using cshap_client.network;
 using gnet_csharp;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 单件模式的客户端对象,放一些全局数据
     internal class Client

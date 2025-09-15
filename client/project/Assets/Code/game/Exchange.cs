@@ -1,12 +1,8 @@
-﻿using Gserver;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using cshap_client.cfg;
+using Code.cfg;
 
-namespace cshap_client.game
+namespace Code.game
 {
     // 兑换组件(如礼包,商店等)
     public class Exchange : BasePlayerComponent

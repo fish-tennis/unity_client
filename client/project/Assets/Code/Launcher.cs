@@ -2,8 +2,8 @@
 using System;
 using System.IO;
 using System.Text;
+using Code.game;
 using UnityEngine;
-using cshap_client.game;
 
 public class ConsoleToUnityLog : TextWriter
 {

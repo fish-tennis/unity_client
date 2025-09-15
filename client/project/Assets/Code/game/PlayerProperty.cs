@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace cshap_client.game
+namespace Code.game
 {
     using PlayerPropertyGetter = System.Func<Player, string, int>;
     using PlayerPropertyGetterString = System.Func<Player, string, string>;
