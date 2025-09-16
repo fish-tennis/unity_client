@@ -4,7 +4,7 @@ using Code.ViewMgr;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Code.views.QuestView
+namespace Code.Views
 {
     // 任务界面
     public class QuestView : ViewBase
@@ -30,22 +30,16 @@ namespace Code.views.QuestView
                 Destroy(child.gameObject);
             }
             var quest = Client.Instance.Player.GetQuest();
-            foreach (var item in quest.Quests.Values)
+            foreach (var questData in quest.Quests.Values)
             {
                 var newNode = Instantiate(m_TemplateInstance, m_Content);
-                UpdateQuest(newNode, item);
+                newNode.GetComponent<QuestBindData>().SetBindingData(questData);
             }
-        }
-
-        public void UpdateQuest(GameObject obj, Gserver.QuestData questData)
-        {
-            var questCfg = DataMgr.Quests[questData.CfgId];
-            obj.transform.Find("Text_Name").GetComponent<Text>().text = questCfg.Name;
         }
 
         public void OnClickBack()
         {
-            ViewMgr.ViewMgr.Instance.GetViewByType<MainView.MainView>()?.ShowView("MainView");
+            ViewMgr.ViewMgr.Instance.GetViewByType<MainView>()?.ShowView("MainView");
         }
     }
 }

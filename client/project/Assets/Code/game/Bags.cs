@@ -67,6 +67,12 @@ namespace Code.game
             return null;
         }
 
+        public int GetItemCount(int itemCfgId)
+        {
+            var bag = GetBagByItemCfgId(itemCfgId);
+            return bag?.GetElemCount(itemCfgId) ?? 0;
+        }
+
         // 检查物品是否足够
         public bool IsEnough(IEnumerable<Gserver.ElemNum> items)
         {

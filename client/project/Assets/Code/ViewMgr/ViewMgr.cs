@@ -68,7 +68,7 @@ namespace Code.ViewMgr
             {
                 foreach (var element in list)
                 {
-                    element.UpdateShow();
+                    element.UpdateUI();
                 }
             }
         }

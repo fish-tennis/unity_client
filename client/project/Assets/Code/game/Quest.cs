@@ -75,5 +75,25 @@ namespace Code.game
             req.QuestCfgIds.AddRange(questCfgIds);
             Send(req);
         }
+
+        // 检查任务是否处于完成状态
+        public bool CanFinish(Gserver.QuestData questData, Gserver.QuestCfg questCfg)
+        {
+            if (questCfg.Progress != null)
+            {
+                if (questData.Progress < questCfg.Progress.Total)
+                {
+                    return false;
+                }
+            }
+            foreach (var itemNum in questCfg.Collects)
+            {
+                if (GetPlayer().GetBags().GetItemCount(itemNum.CfgId) < itemNum.Num)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UIElements.Button;
 
-namespace Code.views.MainView
+namespace Code.Views
 {
     // 主界面
     public class MainView : ViewBase
@@ -20,6 +20,7 @@ namespace Code.views.MainView
 
         public void ShowView(string viewName)
         {
+            Debug.Log($"ShowView:{viewName}");
             for (var i = 0; i < gameObject.transform.parent.childCount; i++)
             {
                 var viewNode = gameObject.transform.parent.GetChild(i);
@@ -55,9 +56,6 @@ namespace Code.views.MainView
         public void OnClickQuest()
         {
             ShowView("QuestView");
-            // ViewMgr.ViewMgr.Instance.ShowViewByType(typeof(QuestView.QuestView), true);
-            // gameObject.SetActive(false);
-            // gameObject.transform.parent.Find("QuestView").gameObject.SetActive(true);
         }
     }
 }

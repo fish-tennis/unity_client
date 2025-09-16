@@ -127,7 +127,7 @@ namespace Code.ViewMgr
         }
 
         // 更新显示
-        public void UpdateShow()
+        public void UpdateUI()
         {
             Debug.Log("UpdateShow:" + gameObject.name + " " + this.Format);
             if (!gameObject.activeSelf)

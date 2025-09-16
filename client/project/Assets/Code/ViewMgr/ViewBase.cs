@@ -18,7 +18,7 @@ namespace Code.ViewMgr
             var scripts = this.gameObject.GetComponentsInChildren<ElementProperties>(true);
             foreach (var script in scripts)
             {
-                script.UpdateShow();
+                script.UpdateUI();
             }
         }
 
