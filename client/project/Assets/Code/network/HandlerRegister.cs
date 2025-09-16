@@ -1,23 +1,20 @@
-﻿using gnet_csharp;
-using Google.Protobuf;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Code.game;
-using UnityEditor.Experimental.GraphView;
+using Code.ViewMgr;
+using gnet_csharp;
+using Google.Protobuf;
 using UnityEngine;
 
-namespace cshap_client.network
+namespace Code.network
 {
     public class MethodData
     {
         public MethodInfo Method;
         public bool IsPlayer; // 玩家的消息回调
         public string ComponentName; // 玩家组件名,为空表示是Player类
+        public string ViewName; // 用于ViewBase的继承类注册消息回调
 
         public MethodData Next; // 链表,同一个消息可以注册多个回调
     }
@@ -36,7 +33,7 @@ namespace cshap_client.network
         //   OnXyz(Xyz res)
         //   OnXyz(Xyz res, int errCode)
         // 支持静态函数,玩家模块的成员函数
-        public static void RegisterMethodsForClass(Type type, string componentName)
+        public static void RegisterMethodsForClass(Type type, string name)
         {
             // 获取所有方法
             var methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
@@ -47,11 +44,6 @@ namespace cshap_client.network
                     continue;
                 }
                 var messageName = method.Name.Substring(HandlerMethodPrefix.Length);
-                //var descriptor = PacketCommandMapping.GetMessageDescriptor(messageName);
-                //if (descriptor == null)
-                //{
-                //    continue;
-                //}
                 if (method.GetParameters().Length < 1 || method.GetParameters().Length > 2)
                 {
                     continue;
@@ -78,15 +70,23 @@ namespace cshap_client.network
                 var methodData = new MethodData
                 {
                     Method = method,
-                    ComponentName = componentName,
                 };
                 if(type == typeof(Player))
                 {
                     methodData.IsPlayer = true;
                 }
-                if (!string.IsNullOrEmpty(componentName))
+                if (!string.IsNullOrEmpty(name))
                 {
-                    methodData.IsPlayer = true;
+                    if (typeof(IPlayerComponent).IsAssignableFrom(type))
+                    {
+                        methodData.IsPlayer = true;
+                        methodData.ComponentName = name;
+                    }
+                    else if(typeof(ViewBase).IsAssignableFrom(type))
+                    {
+                        methodData.IsPlayer = false;
+                        methodData.ViewName = name;
+                    }
                 }
                 if (m_Handlers.TryGetValue(messageParamInfo.ParameterType, out var existMethodData))
                 {
@@ -96,7 +96,17 @@ namespace cshap_client.network
                 {
                     m_Handlers.Add(messageParamInfo.ParameterType, methodData);
                 }
-                Debug.Log("RegisterHandler:" + method.Name + " message:" + messageName + " type:" + type.Name);
+
+                if (method.IsStatic)
+                {
+                    Debug.Log($"RegisterStaticHandler:{method.Name} {messageName} {type.Name}");
+                }
+                else
+                {
+                    Debug.Log(methodData.IsPlayer
+                        ? $"RegisterPlayerHandler:{method.Name} {messageName} {type.Name} {methodData.ComponentName}"
+                        : $"RegisterViewHandler:{method.Name} {messageName} {type.Name} {methodData.ViewName}");
+                }
             }
         }
 
@@ -172,18 +182,28 @@ namespace cshap_client.network
                             }
                             else
                             {
-                                var componet = player.GetComponentByName(methodData.ComponentName);
-                                if (componet == null)
+                                var component = player.GetComponentByName(methodData.ComponentName);
+                                if (component == null)
                                 {
                                     Console.WriteLine("not find component, message" + message.GetType().Name + " component:" + methodData.ComponentName);
                                     return false;
                                 }
-                                method.Invoke(componet, parameters); // 玩家组件上的成员函数
-                            } 
+                                method.Invoke(component, parameters); // 玩家组件上的成员函数
+                            }
                         }
                         else
                         {
-                            return false;
+                            if (string.IsNullOrEmpty(methodData.ViewName))
+                            {
+                                return false;
+                            }
+                            var view = ViewMgr.ViewMgr.Instance.GetViewByName(methodData.ViewName);
+                            if (!view)
+                            {
+                                Console.WriteLine("not find view, message" + message.GetType().Name + " name:" + methodData.ViewName);
+                                return false;
+                            }
+                            method.Invoke(view, parameters); // view上的成员函数
                         }
                     }
                 }

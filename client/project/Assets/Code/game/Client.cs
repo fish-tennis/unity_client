@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using Code.cfg;
-using cshap_client.network;
+using Code.network;
 using gnet_csharp;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;

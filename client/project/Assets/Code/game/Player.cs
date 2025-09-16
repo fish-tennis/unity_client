@@ -22,7 +22,7 @@ namespace Code.game
         {
             // TODO:也可以通过C#的自定义属性来自动添加组件(在组件类上设置自定义属性)
             // 这里先手动写,也没问题
-            BaseInfo =  AddComponent(new BaseInfo(this)) as BaseInfo;
+            BaseInfo = AddComponent(new BaseInfo(this)) as BaseInfo;
             AddComponent(new Quest(this));
             AddComponent(new Exchange(this));
             AddComponent(new Activities(this));

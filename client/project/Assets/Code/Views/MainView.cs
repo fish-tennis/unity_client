@@ -14,7 +14,6 @@ namespace Code.Views
 
         public void Start()
         {
-            base.Start();
             ShowView("MainView");
         }
 

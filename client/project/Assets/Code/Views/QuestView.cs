@@ -1,4 +1,6 @@
-﻿using Code.cfg;
+﻿using System;
+using System.Collections.Generic;
+using Code.cfg;
 using Code.game;
 using Code.ViewMgr;
 using UnityEngine;
@@ -16,7 +18,6 @@ namespace Code.Views
 
         public void Start()
         {
-            base.Start();
             m_ButtonBack.onClick.AddListener(OnClickBack);
             m_TemplateInstance = Instantiate(m_Template);
             Destroy(m_Template);
@@ -25,21 +26,46 @@ namespace Code.Views
         
         public void UpdateQuests()
         {
-            foreach (Transform child in m_Content)
-            {
-                Destroy(child.gameObject);
-            }
             var quest = Client.Instance.Player.GetQuest();
-            foreach (var questData in quest.Quests.Values)
-            {
-                var newNode = Instantiate(m_TemplateInstance, m_Content);
-                newNode.GetComponent<QuestBindData>().SetBindingData(questData);
-            }
+            BindingUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content, m_TemplateInstance,
+                quest.Quests,x=>x.CfgId);
         }
 
         public void OnClickBack()
         {
-            ViewMgr.ViewMgr.Instance.GetViewByType<MainView>()?.ShowView("MainView");
+            Debug.Log("OnClickBack");
+            ViewMgr.ViewMgr.Instance.GetViewByName<MainView>("MainView")?.ShowView("MainView");
         }
+
+        public void OnQuestSync(Gserver.QuestSync res)
+        {
+            Debug.Log("OnQuestSync: Finished:" + res.Finished.Count + " Quests:" + res.Quests.Count);
+            UpdateQuests();
+        }
+
+        // 任务完成的回调
+        // 数据在Code.game.Quest.cs里面已经处理过了,这里只是刷新ui
+        public void OnFinishQuestRes(Gserver.FinishQuestRes res)
+        {
+            Debug.Log("OnFinishQuestRes");
+            UpdateQuests(); // 暂时不细化,整体刷新
+        }
+
+        // 任务删除的回调
+        // 数据在Code.game.Quest.cs里面已经处理过了,这里只是刷新ui
+        public void OnQuestRemoveRes(Gserver.QuestRemoveRes res)
+        {
+            Debug.Log("OnQuestRemoveRes");
+            UpdateQuests(); // 暂时不细化,整体刷新
+        }
+
+        // 任务更新的回调
+        // 数据在Code.game.Quest.cs里面已经处理过了,这里只是刷新ui
+        public void OnQuestUpdate(Gserver.QuestUpdate res)
+        {
+            Debug.Log("OnQuestUpdate");
+            UpdateQuests(); // 暂时不细化,整体刷新
+        }
+        
     }
 }

@@ -36,6 +36,11 @@ namespace Code.ViewMgr
             }
             ViewMgr.Instance.AddElement(this);
         }
+
+        public void Start()
+        {
+            UpdateUI();
+        }
         
         public void OnDestroy()
         {
@@ -144,7 +149,10 @@ namespace Code.ViewMgr
                 if (m_FormatInfo.Properties.Count == 0)
                 {
                     var propertyValue = GetPropertyValue(m_FormatInfo.Format);
-                    text.text = propertyValue.ToString();
+                    if (propertyValue != null)
+                    {
+                        text.text = propertyValue.ToString();
+                    }
                 }
                 else
                 {
@@ -152,6 +160,10 @@ namespace Code.ViewMgr
                     foreach (var key in m_FormatInfo.Properties)
                     {
                         var propertyValue = GetPropertyValue(key.Property);
+                        if (propertyValue == null)
+                        {
+                            return;
+                        }
                         propertyValues.Add(propertyValue);
                     }
                     text.text = string.Format(m_FormatInfo.Format, propertyValues.ToArray());
@@ -166,6 +178,10 @@ namespace Code.ViewMgr
             const string playerProperty = "Player.";
             if (fullPropertyName.StartsWith(playerProperty))
             {
+                if (Client.Instance.Player == null)
+                {
+                    return null;
+                }
                 var propertyName = fullPropertyName.Substring(playerProperty.Length);
                 return Client.Instance.Player.GetProperty(propertyName);
             }

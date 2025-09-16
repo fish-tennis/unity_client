@@ -1,14 +1,15 @@
 ﻿using Code.cfg;
 using Code.game;
+using Code.ViewMgr;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.Views
 {
     // 任务绑定数据
-    public class QuestBindData : MonoBehaviour
+    public class QuestBindingData : MonoBehaviour, IBindingData
     {
-        private Gserver.QuestData m_BindingData;
+        private Gserver.QuestData m_BindingData => BindingData as Gserver.QuestData;
         
         [SerializeField] private Text m_QuestName;
         [SerializeField] private Text m_Progress;
@@ -20,16 +21,13 @@ namespace Code.Views
             UpdateUI();
         }
 
-        public void SetBindingData(object bindingData)
-        {
-            m_BindingData =  bindingData as Gserver.QuestData;
-        }
+        public object BindingData { get; set; }
 
-        public object GetBindingData()
+        public int GetCfgId()
         {
-            return m_BindingData;
+            return m_BindingData?.CfgId ?? 0;
         }
-
+        
         public void UpdateUI()
         {
             if (m_BindingData == null)

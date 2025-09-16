@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Net.Mail;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using Code.game;
 using gnet_csharp;
 using Google.Protobuf;
 
-namespace cshap_client.network
+namespace Code.network
 {
     internal class ClientConnection
     {
@@ -104,18 +96,18 @@ namespace cshap_client.network
                 if (!HandlerRegister.OnRecvPacket(packet, Client.Instance.Player))
                 {
                     var descriptor = PacketCommandMapping.GetMessageDescriptorByCommand(packet.Command());
-                    if (descriptor != null && descriptor.Name == "HeartBeatRes")
+                    if (descriptor is { Name: "HeartBeatRes" })
                     {
                         continue; // 心跳包不打印
                     }
                     // 没注册的消息
                     if (packet.ErrorCode() > 0)
                     {
-                        Console.WriteLine("recv err:" + packet.ErrorCode() + " name:" + descriptor.Name + " msg:" + packet.Message());
+                        Console.WriteLine("unhandled err:" + packet.ErrorCode() + " name:" + descriptor.Name + " msg:" + packet.Message());
                     }
                     else
                     {
-                        Console.WriteLine("recv cmd:" + packet.Command() + " name:" + descriptor.Name + " msg:" + packet.Message());
+                        Console.WriteLine("unhandled cmd:" + packet.Command() + " name:" + descriptor.Name + " msg:" + packet.Message());
                     }
                 }
             }
