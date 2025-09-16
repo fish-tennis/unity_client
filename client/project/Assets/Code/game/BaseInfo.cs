@@ -16,9 +16,6 @@ namespace Code.game
         {
             data = res.Data;
             Console.WriteLine("OnBaseInfoSync:" + data);
-            // 先写临时代码,后续改成通用代码
-            ViewMgr.ViewMgr.Instance.OnDataUpdate("Player.Level");
-            ViewMgr.ViewMgr.Instance.OnDataUpdate("Player.Exp");
         }
     }
 }

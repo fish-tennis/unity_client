@@ -9,14 +9,19 @@ namespace Code.Views
     // 主界面
     public class MainView : ViewBase
     {
+        [SerializeField] private Text Text_PlayerName;
+        [SerializeField] private Text Text_PlayerLevel;
+        [SerializeField] private Text Text_PlayerExp;
         public InputField InputField_Cmd;
         public Button Button_Cmd;
 
         public void Start()
         {
             ShowView("MainView");
+            UpdatePlayerInfo();
         }
 
+        // 显示指定view并隐藏其他view
         public void ShowView(string viewName)
         {
             Debug.Log($"ShowView:{viewName}");
@@ -55,6 +60,24 @@ namespace Code.Views
         public void OnClickQuest()
         {
             ShowView("QuestView");
+        }
+
+        // 基础信息更新
+        public void OnBaseInfoSync(Gserver.BaseInfoSync res)
+        {
+            UpdatePlayerInfo();
+        }
+
+        private void UpdatePlayerInfo()
+        {
+            var data = Client.Instance.Player.BaseInfo.data;
+            if (data == null)
+            {
+                return;
+            }
+            Text_PlayerName.text = Client.Instance.Player.Name;
+            Text_PlayerLevel.text = $"Lv.{data.Level}";
+            Text_PlayerExp.text = data.Exp.ToString();
         }
     }
 }

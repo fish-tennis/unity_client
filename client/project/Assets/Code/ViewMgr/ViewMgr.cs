@@ -14,8 +14,8 @@ namespace Code.ViewMgr
 
         // 所有view
         public Dictionary<string,ViewBase> m_Views = new();
-        // 所有需要监听数据更新的控件
-        public Dictionary<string,List<ElementProperties>> m_Elements = new();
+        // // 所有需要监听数据更新的控件
+        // public Dictionary<string,List<ElementProperties>> m_Elements = new();
         // 已经注册过消息回调的view name
         public HashSet<string> m_ViewNamesHasRegistered = new();
         
@@ -42,50 +42,50 @@ namespace Code.ViewMgr
             Debug.Log("RemoveView:" + view.name);
         }
         
-        public void AddElement(ElementProperties element)
-        {
-            foreach (var property in element.GetFormatInfo().Properties)
-            {
-                if (m_Elements.TryGetValue(property.Property, out var list))
-                {
-                    list.Add(element);
-                }
-                else
-                {
-                    m_Elements.Add(property.Property, new List<ElementProperties>() { element });
-                    Debug.Log("AddElement:" + element.name + " "  + property.Property);
-                }
-            }
-        }
+        // public void AddElement(ElementProperties element)
+        // {
+        //     foreach (var property in element.GetFormatInfo().Properties)
+        //     {
+        //         if (m_Elements.TryGetValue(property.Property, out var list))
+        //         {
+        //             list.Add(element);
+        //         }
+        //         else
+        //         {
+        //             m_Elements.Add(property.Property, new List<ElementProperties>() { element });
+        //             Debug.Log("AddElement:" + element.name + " "  + property.Property);
+        //         }
+        //     }
+        // }
+        //
+        // public void RemoveElement(ElementProperties element)
+        // {
+        //     foreach (var property in element.GetFormatInfo().Properties)
+        //     {
+        //         if (m_Elements.TryGetValue(property.Property, out var list))
+        //         {
+        //             list.Remove(element);
+        //             if(list.Count == 0)
+        //             {
+        //                 m_Elements.Remove(property.Property);
+        //             }
+        //             Debug.Log("RemoveElement:" + element.name + " "  + property.Property);
+        //         } 
+        //     }
+        // }
 
-        public void RemoveElement(ElementProperties element)
-        {
-            foreach (var property in element.GetFormatInfo().Properties)
-            {
-                if (m_Elements.TryGetValue(property.Property, out var list))
-                {
-                    list.Remove(element);
-                    if(list.Count == 0)
-                    {
-                        m_Elements.Remove(property.Property);
-                    }
-                    Debug.Log("RemoveElement:" + element.name + " "  + property.Property);
-                } 
-            }
-        }
-
-        // 响应数据更新
-        public void OnDataUpdate(string propertyName)
-        {
-            Debug.Log("OnDataUpdate:" + propertyName);
-            if (m_Elements.TryGetValue(propertyName, out var list))
-            {
-                foreach (var element in list)
-                {
-                    element.UpdateUI();
-                }
-            }
-        }
+        // // 响应数据更新
+        // public void OnDataUpdate(string propertyName)
+        // {
+        //     Debug.Log("OnDataUpdate:" + propertyName);
+        //     if (m_Elements.TryGetValue(propertyName, out var list))
+        //     {
+        //         foreach (var element in list)
+        //         {
+        //             element.UpdateUI();
+        //         }
+        //     }
+        // }
 
         // 根据name查找view
         public ViewBase GetViewByName(string name)
