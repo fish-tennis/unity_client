@@ -11,6 +11,21 @@ namespace Code.views.MainView
     {
         public InputField InputField_Cmd;
         public Button Button_Cmd;
+
+        public void Start()
+        {
+            base.Start();
+            ShowView("MainView");
+        }
+
+        public void ShowView(string viewName)
+        {
+            for (var i = 0; i < gameObject.transform.parent.childCount; i++)
+            {
+                var viewNode = gameObject.transform.parent.GetChild(i);
+                viewNode.gameObject.SetActive(viewNode.name == viewName);
+            }
+        }
         
         public void OnClickCmd()
         {
@@ -39,8 +54,10 @@ namespace Code.views.MainView
         // 切换到任务界面
         public void OnClickQuest()
         {
-            gameObject.SetActive(false);
-            gameObject.transform.parent.Find("QuestView").gameObject.SetActive(true);
+            ShowView("QuestView");
+            // ViewMgr.ViewMgr.Instance.ShowViewByType(typeof(QuestView.QuestView), true);
+            // gameObject.SetActive(false);
+            // gameObject.transform.parent.Find("QuestView").gameObject.SetActive(true);
         }
     }
 }

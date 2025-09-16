@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Code.ViewMgr;
 using UnityEngine;
 
@@ -70,6 +71,18 @@ namespace Code.ViewMgr
                     element.UpdateShow();
                 }
             }
+        }
+        
+        public T GetViewByType<T>() where T : ViewBase
+        {
+            foreach (var view in views)
+            {
+                if (view is T tView)
+                {
+                    return tView;
+                }
+            }
+            return null;
         }
         
     }

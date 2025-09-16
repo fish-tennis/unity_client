@@ -9,13 +9,17 @@ namespace Code.views.QuestView
     // 任务界面
     public class QuestView : ViewBase
     {
-        private Transform m_Content;
-        private GameObject m_Template;
+        [SerializeField] private Transform m_Content;
+        [SerializeField]  private GameObject m_Template;
+        private GameObject m_TemplateInstance;
+        [SerializeField] private Button m_ButtonBack;
+
         public void Start()
         {
             base.Start();
-            m_Content = transform.Find("ScrollView_Quest").Find("Content");
-            m_Template = Instantiate(transform.Find("Template").gameObject);
+            m_ButtonBack.onClick.AddListener(OnClickBack);
+            m_TemplateInstance = Instantiate(m_Template);
+            Destroy(m_Template);
             UpdateQuests();
         }
         
@@ -28,7 +32,7 @@ namespace Code.views.QuestView
             var quest = Client.Instance.Player.GetQuest();
             foreach (var item in quest.Quests.Values)
             {
-                var newNode = Instantiate(m_Template, m_Content);
+                var newNode = Instantiate(m_TemplateInstance, m_Content);
                 UpdateQuest(newNode, item);
             }
         }
@@ -37,6 +41,11 @@ namespace Code.views.QuestView
         {
             var questCfg = DataMgr.Quests[questData.CfgId];
             obj.transform.Find("Text_Name").GetComponent<Text>().text = questCfg.Name;
+        }
+
+        public void OnClickBack()
+        {
+            ViewMgr.ViewMgr.Instance.GetViewByType<MainView.MainView>()?.ShowView("MainView");
         }
     }
 }
