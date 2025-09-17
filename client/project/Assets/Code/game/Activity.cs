@@ -64,11 +64,28 @@ namespace Code.game
         }
         
         // 获取活动的子任务
-        public Dictionary<int,Gserver.QuestData> GetQuests()
+        // includeFinished: 是否包含已完成的任务
+        public Dictionary<int,Gserver.QuestData> GetQuests(bool includeFinished)
         {
             // 活动的子任务放在玩家的任务模块里,从任务模块里筛选出该活动的子任务
             var quest = m_Activities.GetPlayer().GetQuest();
-            return quest.Filter(q => q.ActivityId == Id);
+            var allQuests = quest.Filter(q => q.ActivityId == Id);
+            if (includeFinished)
+            {
+                foreach (var questCfgId in m_Cfg.QuestIds)
+                {
+                    if (!allQuests.ContainsKey(questCfgId))
+                    {
+                        allQuests[questCfgId] = new Gserver.QuestData
+                        {
+                            CfgId = questCfgId,
+                            ActivityId = Id,
+                            Progress = -1, // 特殊值表示该任务是已完成的任务
+                        };
+                    }
+                }
+            }
+            return allQuests;
         }
         
         // 获取活动的礼包记录

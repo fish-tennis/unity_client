@@ -34,6 +34,7 @@ namespace Code.Views
             Destroy(m_Template_Toggle);
 
             UpdateActivityTabs();
+            UpdateSelectedActivity();
         }
         
         public void OnClickBack()
@@ -71,7 +72,7 @@ namespace Code.Views
                 return;
             }
             // 该活动的任务
-            var filteredQuests = activity.GetQuests();
+            var filteredQuests = activity.GetQuests(true);
             ControlUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content_Quest, m_QuestTemplateInstance,
                 filteredQuests,x=>x.CfgId);
             

@@ -40,12 +40,13 @@ namespace Code.Controls
             m_Rewards.text = "礼包内容:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Rewards, " ");
             if(exchangeCfg.Consumes.Count > 0)
             {
-                m_Consumes.text = "价格:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Consumes, "/");
+                m_Consumes.text = "价格:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Consumes, " ");
             }
             else
             {
                 m_Consumes.text = "免费";
             }
+            m_Exchange.gameObject.SetActive(BindingData.Count < exchangeCfg.CountLimit);
         }
 
         public void OnClickExchange()

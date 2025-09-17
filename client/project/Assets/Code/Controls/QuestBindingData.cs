@@ -10,6 +10,7 @@ namespace Code.Controls
     public class QuestBindingData : MonoBehaviour, IBindingData<Gserver.QuestData>
     {
         [SerializeField] private Text m_QuestName;
+        [SerializeField] private Text m_Detail;
         [SerializeField] private Text m_Rewards;
         [SerializeField] private Text m_Progress;
         [SerializeField] private Button m_Finish;
@@ -35,8 +36,13 @@ namespace Code.Controls
             }
             var questCfg = DataMgr.Quests[BindingData.CfgId];
             m_QuestName.text = questCfg.Name;
+            m_Detail.text = questCfg.Detail;
             var progressStr = "";
-            if (questCfg.Progress != null)
+            if(BindingData.Progress == -1)
+            {
+                progressStr = "已完成";
+            }
+            else if (questCfg.Progress != null)
             {
                 progressStr = $"{BindingData.Progress}/{questCfg.Progress.Total}";
             }
