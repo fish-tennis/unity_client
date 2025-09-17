@@ -4,6 +4,7 @@ namespace Code.cfg
 {
     public static class ItemCfgHelper
     {
+        // 返回值: 物品A*1 物品B*2
         public static string GetItemStrings(IEnumerable<Gserver.ItemNum> items, string separator)
         {
             if (items == null)
@@ -22,6 +23,7 @@ namespace Code.cfg
             return string.Join(separator, itemStrings);
         }
 
+        // 返回值: 物品A*1 物品B*2
         public static string GetItemStrings(IEnumerable<Gserver.AddElemArg> items, string separator)
         {
             if (items == null)

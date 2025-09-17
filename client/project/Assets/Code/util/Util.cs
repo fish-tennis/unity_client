@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Code.cfg;
+using Code.game;
 
 namespace Code.util
 {
@@ -39,6 +41,26 @@ namespace Code.util
                 list.Sort(comparer);
             }
             return list;
+        }
+        
+        // 返回值: 物品A:1/10 物品B:5/1
+        public static string GetRequestItemStrings(IEnumerable<Gserver.ItemNum> items, string separator)
+        {
+            if (items == null)
+            {
+                return "";
+            }
+            var itemStrings = new List<string>();
+            foreach (var itemNum in items)
+            {
+                if (!DataMgr.ItemCfgs.TryGetValue(itemNum.CfgId, out var itemCfg))
+                {
+                    continue;
+                }
+                var ownNum = Client.Instance.Player.GetBags().GetItemCount(itemNum.CfgId);
+                itemStrings.Add($"{itemCfg.Name}:{ownNum}/{itemNum.Num}");
+            }
+            return string.Join(separator, itemStrings);
         }
     }
 }

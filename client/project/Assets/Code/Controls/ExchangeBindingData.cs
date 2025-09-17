@@ -1,5 +1,6 @@
 ﻿using Code.cfg;
 using Code.game;
+using Code.util;
 using Gserver;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,7 +41,7 @@ namespace Code.Controls
             m_Rewards.text = "礼包内容:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Rewards, " ");
             if(exchangeCfg.Consumes.Count > 0)
             {
-                m_Consumes.text = "价格:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Consumes, " ");
+                m_Consumes.text = "价格:" + Util.GetRequestItemStrings(exchangeCfg.Consumes, " ");
             }
             else
             {
