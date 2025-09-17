@@ -1,0 +1,53 @@
+﻿using Code.cfg;
+using Code.game;
+using Gserver;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Code.Controls
+{
+    // 兑换绑定数据
+    public class ExchangeBindingData : MonoBehaviour, IBindingData<Gserver.ExchangeRecord>
+    {
+        [SerializeField] private Text m_ExchangeName;
+        [SerializeField] private Text m_ExchangeCount;
+        [SerializeField] private Button m_Exchange;
+
+        public void Start()
+        {
+            m_Exchange.onClick.AddListener(OnClickExchange);
+            UpdateUI();
+        }
+
+        public ExchangeRecord BindingData { get; set; }
+
+        public int GetCfgId()
+        {
+            return BindingData?.CfgId ?? 0;
+        }
+        
+        public void UpdateUI()
+        {
+            if (BindingData == null)
+            {
+                return;
+            }
+            var exchangeCfg = DataMgr.ExchangeCfgs[BindingData.CfgId];
+            m_ExchangeName.text = exchangeCfg.Detail;
+            m_ExchangeCount.text = $"{BindingData.Count}/{exchangeCfg.CountLimit}";
+        }
+
+        public void OnClickExchange()
+        {
+            Client.Send(new Gserver.ExchangeReq()
+            {
+                IdCounts = { new Gserver.IdCount()
+                {
+                    Id = BindingData.CfgId,
+                    Count = 1,
+                } }
+            });
+        }
+        
+    }
+}

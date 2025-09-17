@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.util;
 
 namespace Code.cfg
 {
@@ -12,9 +13,9 @@ namespace Code.cfg
         
         public static void AfterLoad()
         {
-            QuestsByQuestType = Helper.CreateDictionaryIndex(DataMgr.Quests, (questCfg) => questCfg.QuestType);
-            QuestsByCategory = Helper.CreateDictionaryIndex(DataMgr.Quests, (questCfg) => questCfg.Category);
-            Achievement = Helper.CreateList(DataMgr.Quests,  (questCfg) => questCfg.QuestType == (int)Gserver.QuestType.Achievement, null);
+            QuestsByQuestType = Util.CreateDictionaryIndex(DataMgr.Quests, (questCfg) => questCfg.QuestType);
+            QuestsByCategory = Util.CreateDictionaryIndex(DataMgr.Quests, (questCfg) => questCfg.Category);
+            Achievement = Util.CreateList(DataMgr.Quests,  (questCfg) => questCfg.QuestType == (int)Gserver.QuestType.Achievement, null);
             Achievement.Sort((a, b) => a.CfgId.CompareTo(b.CfgId));
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Code.cfg;
 
 namespace Code.game
@@ -8,13 +9,14 @@ namespace Code.game
     // 设计思路: 活动本身只是任务和兑换的组合,具体的任务数据和兑换数据都在玩家的Quest组件和Exchange组件里
     public class Activity : IPropertyInt32
     {
-        public Activities m_Activities;
-        public int Id;
-        public Gserver.ActivityCfg m_Cfg; // 配置数据
+        public readonly Activities m_Activities;
+        public readonly int Id;
+        public readonly Gserver.ActivityCfg m_Cfg; // 配置数据
         public Gserver.ActivityDefaultBaseData m_Data; // 活动数据
 
-        public Activity(int activityId, Gserver.ActivityDefaultBaseData data)
+        public Activity(Activities activities, int activityId, Gserver.ActivityDefaultBaseData data)
         {
+            m_Activities = activities;
             Id = activityId;
             m_Data = data;
             DataMgr.ActivityCfgs.TryGetValue(Id, out var value);
@@ -59,6 +61,38 @@ namespace Code.game
             var now = DateTime.Now.Date;
             var joinDate = DateTimeOffset.FromUnixTimeSeconds(m_Data.JoinTime).Date;
             return (now - joinDate).Days + 1;
+        }
+        
+        // 获取活动的子任务
+        public Dictionary<int,Gserver.QuestData> GetQuests()
+        {
+            // 活动的子任务放在玩家的任务模块里,从任务模块里筛选出该活动的子任务
+            var quest = m_Activities.GetPlayer().GetQuest();
+            return quest.Filter(q => q.ActivityId == Id);
+        }
+        
+        // 获取活动的礼包记录
+        // includeNotExchanged: 是否包含未兑换的礼包记录
+        public Dictionary<int,Gserver.ExchangeRecord> GetExchangeRecords(bool includeNotExchanged)
+        {
+            // 活动的兑换记录放在玩家的兑换模块里,从兑换模块里筛选出该活动的兑换记录
+            var exchange = m_Activities.GetPlayer().GetExchange();
+            var allExchanges = exchange.Filter(e => ActivityCfgHelper.GetActivityIdByExchangeId(e.CfgId) == Id);
+            // 有兑换记录的礼包才会放在玩家的兑换模块里,所以这里遍历活动配置的所有礼包,把没兑换过的礼包也加进来
+            if (includeNotExchanged)
+            {
+                foreach (var exchangeId in m_Cfg.ExchangeIds)
+                {
+                    if (!allExchanges.ContainsKey(exchangeId))
+                    {
+                        allExchanges[exchangeId] = new Gserver.ExchangeRecord
+                        {
+                            CfgId = exchangeId,
+                        };
+                    }
+                }
+            }
+            return allExchanges;
         }
     }
 }

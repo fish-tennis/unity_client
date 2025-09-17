@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.cfg;
+using Code.Controls;
 using Code.game;
 using Code.ViewMgr;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Code.Views
         public void UpdateQuests()
         {
             var quest = Client.Instance.Player.GetQuest();
-            BindingUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content, m_TemplateInstance,
+            ControlUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content, m_TemplateInstance,
                 quest.Quests,x=>x.CfgId);
         }
 

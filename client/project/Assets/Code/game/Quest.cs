@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code.util;
 
 namespace Code.game
 {
@@ -95,5 +96,12 @@ namespace Code.game
             }
             return true;
         }
+        
+        // 返回所有符合条件的进行中的任务
+        public Dictionary<int,Gserver.QuestData> Filter(Func<Gserver.QuestData, bool> filter)
+        {
+            return Util.CreateSubset(Quests,filter);
+        }
+        
     }
 }

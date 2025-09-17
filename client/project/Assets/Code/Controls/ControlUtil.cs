@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code.ViewMgr;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Code.ViewMgr
+namespace Code.Controls
 {
-    public static class BindingUtil
+    // 通用的控件接口
+    public static class ControlUtil
     {
         // 通用的刷新列表操作(如任务列表)
         public static void UpdateListView<TData,TBindingData>(Transform content, GameObject template, Dictionary<int,TData> dataDict,
-            Func<TData,int> cfgIdGetter) where TBindingData:IBindingData
+            Func<TData,int> cfgIdGetter) where TBindingData:IBindingData<TData>
         {
             Debug.Log($"UpdateListView Count:{dataDict.Count}");
             var existsBindingData = new HashSet<int>();
@@ -27,12 +28,14 @@ namespace Code.ViewMgr
             }
             foreach (var data in dataDict.Values)
             {
-                if (existsBindingData.Contains(cfgIdGetter(data)))
+                var cfgId = cfgIdGetter(data);
+                if (existsBindingData.Contains(cfgId))
                 {
                     continue;
                 }
                 // 新增项
                 var newNode = UnityEngine.Object.Instantiate(template, content);
+                newNode.transform.name = cfgId.ToString();
                 var bindingData = newNode.GetComponent<TBindingData>();
                 bindingData.BindingData = data;
                 bindingData.UpdateUI();

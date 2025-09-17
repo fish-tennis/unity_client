@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.cfg;
+using Code.util;
 
 namespace Code.game
 {
@@ -115,6 +116,12 @@ namespace Code.game
                 recordCount = record.Count;
             }
             return exchangeCount + recordCount >= exchangeCfg.CountLimit; // 检查兑换次数限制
+        }
+        
+        // 返回所有符合条件的兑换项
+        public Dictionary<int,Gserver.ExchangeRecord> Filter(Func<Gserver.ExchangeRecord, bool> filter)
+        {
+            return Util.CreateSubset(Records,filter);
         }
     }
 }

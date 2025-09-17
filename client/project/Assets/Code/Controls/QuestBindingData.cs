@@ -1,16 +1,14 @@
 ﻿using Code.cfg;
 using Code.game;
-using Code.ViewMgr;
+using Gserver;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Code.Views
+namespace Code.Controls
 {
     // 任务绑定数据
-    public class QuestBindingData : MonoBehaviour, IBindingData
+    public class QuestBindingData : MonoBehaviour, IBindingData<Gserver.QuestData>
     {
-        private Gserver.QuestData m_BindingData => BindingData as Gserver.QuestData;
-        
         [SerializeField] private Text m_QuestName;
         [SerializeField] private Text m_Progress;
         [SerializeField] private Button m_Finish;
@@ -20,26 +18,26 @@ namespace Code.Views
             m_Finish.onClick.AddListener(OnClickFinish);
             UpdateUI();
         }
-
-        public object BindingData { get; set; }
+        
+        public QuestData BindingData { get; set; }
 
         public int GetCfgId()
         {
-            return m_BindingData?.CfgId ?? 0;
+            return BindingData?.CfgId ?? 0;
         }
         
         public void UpdateUI()
         {
-            if (m_BindingData == null)
+            if (BindingData == null)
             {
                 return;
             }
-            var questCfg = DataMgr.Quests[m_BindingData.CfgId];
+            var questCfg = DataMgr.Quests[BindingData.CfgId];
             m_QuestName.text = questCfg.Name;
             var progressStr = "";
             if (questCfg.Progress != null)
             {
-                progressStr = $"{m_BindingData.Progress}/{questCfg.Progress.Total}";
+                progressStr = $"{BindingData.Progress}/{questCfg.Progress.Total}";
             }
             else if(questCfg.Collects.Count > 0)
             {
@@ -55,14 +53,14 @@ namespace Code.Views
                 }
             }
             m_Progress.text = progressStr;
-            m_Finish.gameObject.SetActive(Client.Instance.Player.GetQuest().CanFinish(m_BindingData, questCfg));
+            m_Finish.gameObject.SetActive(Client.Instance.Player.GetQuest().CanFinish(BindingData, questCfg));
         }
 
         public void OnClickFinish()
         {
             Client.Send(new Gserver.FinishQuestReq()
             {
-                QuestCfgIds = { m_BindingData.CfgId },
+                QuestCfgIds = { BindingData.CfgId },
             });
         }
     }

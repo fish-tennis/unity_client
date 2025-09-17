@@ -2,7 +2,6 @@
 using Code.ViewMgr;
 using UnityEngine;
 using UnityEngine.UI;
-using Button = UnityEngine.UIElements.Button;
 
 namespace Code.Views
 {
@@ -12,11 +11,19 @@ namespace Code.Views
         [SerializeField] private Text Text_PlayerName;
         [SerializeField] private Text Text_PlayerLevel;
         [SerializeField] private Text Text_PlayerExp;
-        public InputField InputField_Cmd;
-        public Button Button_Cmd;
+        [SerializeField] private InputField InputField_Cmd;
+        [SerializeField] private Button Button_Cmd;
+        [SerializeField] private Button Button_Bag;
+        [SerializeField] private Button Button_Quest;
+        [SerializeField] private Button Button_Activity;
 
         public void Start()
         {
+            Button_Cmd.onClick.AddListener(OnClickCmd);
+            Button_Bag.onClick.AddListener(OnClickBag);
+            Button_Quest.onClick.AddListener(OnClickQuest);
+            Button_Activity.onClick.AddListener(OnClickActivity);
+            
             ShowView("MainView");
             UpdatePlayerInfo();
         }
@@ -55,11 +62,24 @@ namespace Code.Views
                 Debug.LogError("test cmd must start with @");
             }
         }
+        
+        // 切换到背包界面
+        public void OnClickBag()
+        {
+            Debug.LogError("背包界面正在制作中");
+            //;ShowView("BagView");
+        }
 
         // 切换到任务界面
         public void OnClickQuest()
         {
             ShowView("QuestView");
+        }
+        
+        // 切换到活动界面
+        public void OnClickActivity()
+        {
+            ShowView("ActivityView");
         }
 
         // 基础信息更新

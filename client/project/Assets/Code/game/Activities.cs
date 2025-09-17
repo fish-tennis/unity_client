@@ -17,23 +17,29 @@ namespace Code.game
         
         public Activity GetActivity(int activityId)
         {
-            return m_Activities.TryGetValue(activityId, out var activity) ? activity : null;
+            return m_Activities.GetValueOrDefault(activityId);
         }
 
         // 活动数据同步
         private void OnActivitySync(Gserver.ActivitySync res)
         {
             Console.WriteLine("OnActivitySync:" + res);
-            Activity activity = null;
-            if (m_Activities.TryGetValue(res.ActivityId, out activity))
+            if (m_Activities.TryGetValue(res.ActivityId, out var activity))
             {
                 activity.m_Data = res.BaseData;
             }
             else
             {
-                activity = new Activity(res.ActivityId, res.BaseData);
+                activity = new Activity(this, res.ActivityId, res.BaseData);
                 m_Activities[res.ActivityId] = activity;
             }
         }
+
+        private void OnActivityRemoveRes(Gserver.ActivityRemoveRes res)
+        {
+            Console.WriteLine("OnActivityRemoveRes:" + res);
+            m_Activities.Remove(res.ActivityId);
+        }
+        
     }
 }
