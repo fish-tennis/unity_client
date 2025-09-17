@@ -1,8 +1,10 @@
-﻿using Code.cfg;
+﻿using System.Linq;
+using Code.cfg;
 using Code.Controls;
 using Code.game;
 using Code.ViewMgr;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Code.Views
@@ -45,25 +47,27 @@ namespace Code.Views
         {
             Debug.Log("UpdateActivityTabs");
             var activities = Client.Instance.Player.GetActivities();
-            Toggle firstToggle = null;
-            foreach (var activity in activities.m_Activities)
-            {
-                var toggleObject = Instantiate(m_ToggleTemplateInstance, m_ToggleGroup_Names.transform);
-                toggleObject.transform.name = activity.Key.ToString();
-                // toggleObject.GetComponent<ActivityBindingData>().BindingData = activity.Key;
-                var toggle = toggleObject.GetComponent<Toggle>();
-                toggle.GetComponentInChildren<Text>().text = activity.Value.m_Cfg.Name;
-                toggle.onValueChanged.AddListener((isOn) => OnToggleValueChanged(toggle, isOn));
-                if (firstToggle == null)
-                {
-                    firstToggle =  toggle;
-                }
-            }
-
-            if (firstToggle != null)
-            {
-                OnToggleValueChanged(firstToggle, true);
-            }
+            ControlUtil.UpdateToggleGroup<Activity,ActivityBindingData>(m_ToggleGroup_Names, m_ToggleTemplateInstance,
+                activities.m_Activities,x=>x.Id, OnToggleValueChanged);
+            // Toggle firstToggle = null;
+            // foreach (var activity in activities.m_Activities.Values)
+            // {
+            //     var toggleObject = Instantiate(m_ToggleTemplateInstance, m_ToggleGroup_Names.transform);
+            //     toggleObject.transform.name = activity.Id.ToString();
+            //     // toggleObject.GetComponent<ActivityBindingData>().BindingData = activity.Key;
+            //     var toggle = toggleObject.GetComponent<Toggle>();
+            //     toggle.GetComponentInChildren<Text>().text = activity.m_Cfg.Name;
+            //     toggle.onValueChanged.AddListener((isOn) => OnToggleValueChanged(toggle, isOn));
+            //     if (firstToggle == null)
+            //     {
+            //         firstToggle = toggle;
+            //     }
+            // }
+            //
+            // if (firstToggle != null)
+            // {
+            //     OnToggleValueChanged(firstToggle, true);
+            // }
         }
 
         // 左侧标签页切换
@@ -94,6 +98,76 @@ namespace Code.Views
             var filteredExchanges = activity.GetExchangeRecords(true);
             ControlUtil.UpdateListView<Gserver.ExchangeRecord,ExchangeBindingData>(m_Content_Exchange, m_ExchangeTemplateInstance,
                 filteredExchanges,x=>x.CfgId);
+        }
+
+        // 当前选择的活动id
+        public int GetSelectedActivityId()
+        {
+            var selectedToggle = m_ToggleGroup_Names.ActiveToggles().FirstOrDefault();
+            if (selectedToggle != null)
+            {
+                var activityId = int.Parse(selectedToggle.transform.name);
+                return activityId;
+            }
+            return 0;
+        }
+        
+        // 刷新当前选择的活动
+        public void UpdateSelectedActivity()
+        {
+            var activityId = GetSelectedActivityId();
+            if (activityId > 0)
+            {
+                UpdateActivity(activityId);
+            }
+        }
+        
+        // 监听活动更新
+        private void OnActivitySync(Gserver.ActivitySync res)
+        {
+            Debug.Log($"OnActivitySync {res}");
+            UpdateActivityTabs();
+            if (res.ActivityId == GetSelectedActivityId())
+            {
+                UpdateActivity(res.ActivityId);
+            }
+        }
+
+        // 监听活动删除
+        private void OnActivityRemoveRes(Gserver.ActivityRemoveRes res)
+        {
+            Debug.Log($"OnActivityRemoveRes {res}");
+            UpdateActivityTabs();
+        }
+        
+        public void OnFinishQuestRes(Gserver.FinishQuestRes res, int error)
+        {
+            Debug.Log($"OnFinishQuestRes {res} {error}");
+            UpdateSelectedActivity(); // 暂时不细化,整体刷新
+        }
+
+        public void OnQuestRemoveRes(Gserver.QuestRemoveRes res, int error)
+        {
+            Debug.Log($"OnQuestRemoveRes {res} {error}");
+            UpdateSelectedActivity(); // 暂时不细化,整体刷新
+        }
+        
+        private void OnExchangeUpdate(Gserver.ExchangeUpdate res)
+        {
+            Debug.Log($"OnExchangeUpdate {res}");
+            UpdateSelectedActivity(); // 暂时不细化,整体刷新
+        }
+
+        private void OnExchangeRemove(Gserver.ExchangeRemove res)
+        {
+            Debug.Log($"OnExchangeRemove {res}");
+            UpdateSelectedActivity(); // 暂时不细化,整体刷新
+        }
+
+        private void OnExchangeRes(Gserver.ExchangeRes res, int error)
+        {
+            Debug.Log($"OnExchangeRes {res} {error}");
+            UpdateSelectedActivity(); // 暂时不细化,整体刷新
         }
         
     }
