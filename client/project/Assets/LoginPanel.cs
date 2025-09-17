@@ -25,6 +25,8 @@ public class LoginPanel : MonoBehaviour
         {
             Text_Error.text = tip;
         };
+        host.text = PlayerPrefs.GetString("Host", "");
+        account.text = PlayerPrefs.GetString("AccountName", "");
     }
 
     private void Update()
@@ -34,13 +36,17 @@ public class LoginPanel : MonoBehaviour
 
     void OnClick()
     {
-        Login.s_AccountName = account.text;
-        Login.s_Password = password.text;
+        Login.s_AccountName = account.text.Trim();
+        Login.s_Password = password.text.Trim();
         Text_Error.text = "connecting to " + host.text;
-        if (!Client.Instance.Connect(host.text))
+        if (!Client.Instance.Connect(host.text.Trim()))
         {
             Text_Error.text = "连接失败";
+            return;
         }
+        PlayerPrefs.SetString("Host", host.text.Trim());
+        PlayerPrefs.SetString("AccountName", Login.s_AccountName);
+        // PlayerPrefs.SetString("Password", Login.GetMd5Password(Login.s_Password));
     }
     // Update is called once per frame
 }

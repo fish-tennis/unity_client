@@ -10,6 +10,7 @@ namespace Code.Controls
     public class QuestBindingData : MonoBehaviour, IBindingData<Gserver.QuestData>
     {
         [SerializeField] private Text m_QuestName;
+        [SerializeField] private Text m_Rewards;
         [SerializeField] private Text m_Progress;
         [SerializeField] private Button m_Finish;
 
@@ -53,6 +54,10 @@ namespace Code.Controls
                 }
             }
             m_Progress.text = progressStr;
+            if (questCfg.Rewards.Count > 0)
+            {
+                m_Rewards.text = "奖励:" + ItemCfgHelper.GetItemStrings(questCfg.Rewards, " ");
+            }
             m_Finish.gameObject.SetActive(Client.Instance.Player.GetQuest().CanFinish(BindingData, questCfg));
         }
 

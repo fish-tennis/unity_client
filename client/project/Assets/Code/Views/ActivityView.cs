@@ -49,25 +49,6 @@ namespace Code.Views
             var activities = Client.Instance.Player.GetActivities();
             ControlUtil.UpdateToggleGroup<Activity,ActivityBindingData>(m_ToggleGroup_Names, m_ToggleTemplateInstance,
                 activities.m_Activities,x=>x.Id, OnToggleValueChanged);
-            // Toggle firstToggle = null;
-            // foreach (var activity in activities.m_Activities.Values)
-            // {
-            //     var toggleObject = Instantiate(m_ToggleTemplateInstance, m_ToggleGroup_Names.transform);
-            //     toggleObject.transform.name = activity.Id.ToString();
-            //     // toggleObject.GetComponent<ActivityBindingData>().BindingData = activity.Key;
-            //     var toggle = toggleObject.GetComponent<Toggle>();
-            //     toggle.GetComponentInChildren<Text>().text = activity.m_Cfg.Name;
-            //     toggle.onValueChanged.AddListener((isOn) => OnToggleValueChanged(toggle, isOn));
-            //     if (firstToggle == null)
-            //     {
-            //         firstToggle = toggle;
-            //     }
-            // }
-            //
-            // if (firstToggle != null)
-            // {
-            //     OnToggleValueChanged(firstToggle, true);
-            // }
         }
 
         // 左侧标签页切换

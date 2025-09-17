@@ -11,6 +11,8 @@ namespace Code.Controls
     {
         [SerializeField] private Text m_ExchangeName;
         [SerializeField] private Text m_ExchangeCount;
+        [SerializeField] private Text m_Consumes;
+        [SerializeField] private Text m_Rewards;
         [SerializeField] private Button m_Exchange;
 
         public void Start()
@@ -35,6 +37,15 @@ namespace Code.Controls
             var exchangeCfg = DataMgr.ExchangeCfgs[BindingData.CfgId];
             m_ExchangeName.text = exchangeCfg.Detail;
             m_ExchangeCount.text = $"{BindingData.Count}/{exchangeCfg.CountLimit}";
+            m_Rewards.text = "礼包内容:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Rewards, " ");
+            if(exchangeCfg.Consumes.Count > 0)
+            {
+                m_Consumes.text = "价格:" + ItemCfgHelper.GetItemStrings(exchangeCfg.Consumes, "/");
+            }
+            else
+            {
+                m_Consumes.text = "免费";
+            }
         }
 
         public void OnClickExchange()
