@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 兑换绑定数据
-    public class ExchangeBindingData : MonoBehaviour, IBindingData<Gserver.ExchangeRecord>
+    public class ExchangeBindingData : MonoBehaviour, IBindingData<Gserver.ExchangeRecord,int>
     {
         [SerializeField] private Text m_ExchangeName;
         [SerializeField] private Text m_ExchangeCount;

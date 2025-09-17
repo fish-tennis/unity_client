@@ -73,23 +73,25 @@ namespace Code.Views
             }
             // 该活动的任务
             var filteredQuests = activity.GetQuests(true);
-            ControlUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content_Quest, m_QuestTemplateInstance,
+            ControlUtil.UpdateListView<int,Gserver.QuestData,QuestBindingData>(m_Content_Quest, m_QuestTemplateInstance,
                 filteredQuests,x=>x.CfgId);
             
             // 该活动的兑换礼包
             var filteredExchanges = activity.GetExchangeRecords(true);
-            ControlUtil.UpdateListView<Gserver.ExchangeRecord,ExchangeBindingData>(m_Content_Exchange, m_ExchangeTemplateInstance,
+            ControlUtil.UpdateListView<int,Gserver.ExchangeRecord,ExchangeBindingData>(m_Content_Exchange, m_ExchangeTemplateInstance,
                 filteredExchanges,x=>x.CfgId);
         }
 
         // 当前选择的活动id
         public int GetSelectedActivityId()
         {
-            var selectedToggle = m_ToggleGroup_Names.ActiveToggles().FirstOrDefault();
-            if (selectedToggle != null)
+            foreach (var toggle in m_ToggleGroup_Names.GetComponentsInChildren<Toggle>())
             {
-                var activityId = int.Parse(selectedToggle.transform.name);
-                return activityId;
+                if(toggle.isOn)
+                {
+                    var activityId = int.Parse(toggle.transform.name);
+                    return activityId;
+                }
             }
             return 0;
         }

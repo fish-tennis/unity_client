@@ -28,7 +28,7 @@ namespace Code.Views
         public void UpdateQuests()
         {
             var quest = Client.Instance.Player.GetQuest();
-            ControlUtil.UpdateListView<Gserver.QuestData,QuestBindingData>(m_Content, m_TemplateInstance,
+            ControlUtil.UpdateListView<int,Gserver.QuestData,QuestBindingData>(m_Content, m_TemplateInstance,
                 quest.Quests,x=>x.CfgId);
         }
 

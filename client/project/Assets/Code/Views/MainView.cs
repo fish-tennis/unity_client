@@ -66,8 +66,7 @@ namespace Code.Views
         // 切换到背包界面
         public void OnClickBag()
         {
-            Debug.LogError("背包界面正在制作中");
-            //;ShowView("BagView");
+            ShowView("BagView");
         }
 
         // 切换到任务界面

@@ -12,11 +12,11 @@ namespace Code.Controls
     public static class ControlUtil
     {
         // 通用的刷新列表操作(如任务列表)
-        public static void UpdateListView<TData,TBindingData>(Transform content, GameObject template,
-            Dictionary<int,TData> dataDict, Func<TData,int> cfgIdGetter) where TBindingData:IBindingData<TData>
+        public static void UpdateListView<TKey,TData,TBindingData>(Transform content, GameObject template,
+            Dictionary<TKey,TData> dataDict, Func<TData,TKey> cfgIdGetter) where TBindingData:IBindingData<TData,TKey>
         {
             Debug.Log($"UpdateListView Count:{dataDict.Count}");
-            var existsBindingData = new HashSet<int>();
+            var existsBindingData = new HashSet<TKey>();
             foreach (Transform child in content)
             {
                 var bindingData = child.GetComponent<TBindingData>();
@@ -53,7 +53,7 @@ namespace Code.Controls
         // 更新ToggleGroup
         public static void UpdateToggleGroup<TData,TBindingData>(ToggleGroup toggleGroup, GameObject template,
             Dictionary<int,TData> dataDict, Func<TData,int> cfgIdGetter, Action<Toggle,bool> onToggleValueChanged)
-            where TBindingData:IBindingData<TData>
+            where TBindingData:IBindingData<TData,int>
         {
             Debug.Log($"UpdateToggleGroup Count:{dataDict.Count}");
             var existsBindingData = new HashSet<int>();

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 用于活动标签的绑定数据(toggle)
-    public class ActivityBindingData : MonoBehaviour, IBindingData<Activity>
+    public class ActivityBindingData : MonoBehaviour, IBindingData<Activity,int>
     {
         [SerializeField] private Text m_ActivityName;
 

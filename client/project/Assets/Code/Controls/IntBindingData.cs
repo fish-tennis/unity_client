@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 通用的绑定一个int的绑定数据
-    public class IntBindingData : MonoBehaviour, IBindingData<int>
+    public class IntBindingData : MonoBehaviour, IBindingData<int,int>
     {
         public int BindingData { get; set; }
 

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 任务绑定数据
-    public class QuestBindingData : MonoBehaviour, IBindingData<Gserver.QuestData>
+    public class QuestBindingData : MonoBehaviour, IBindingData<Gserver.QuestData,int>
     {
         [SerializeField] private Text m_QuestName;
         [SerializeField] private Text m_Detail;
