@@ -21,15 +21,19 @@ namespace Code.Views
         [SerializeField] private ToggleGroup m_ToggleGroup_BagTypes;
         [SerializeField] private GameObject m_Template_Toggle;
         private GameObject m_ToggleTemplateInstance;
-        
-        public void Start()
+
+        public void Awake()
         {
+            base.Awake();
             m_ButtonBack.onClick.AddListener(OnClickBack);
             m_TemplateInstance = Instantiate(m_Template);
             Destroy(m_Template);
             m_ToggleTemplateInstance = Instantiate(m_Template_Toggle);
             Destroy(m_Template_Toggle);
-
+        }
+        
+        public void Start()
+        {
             UpdateBagTabs();
             UpdateBag(ContainerType.CountItem);
         }

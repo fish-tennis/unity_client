@@ -17,11 +17,16 @@ namespace Code.Views
         private GameObject m_TemplateInstance;
         [SerializeField] private Button m_ButtonBack;
 
-        public void Start()
+        public void Awake()
         {
+            base.Awake();
             m_ButtonBack.onClick.AddListener(OnClickBack);
             m_TemplateInstance = Instantiate(m_Template);
             Destroy(m_Template);
+        }
+
+        public void Start()
+        {
             UpdateQuests();
         }
         

@@ -23,9 +23,10 @@ namespace Code.Views
         [SerializeField] private GameObject m_Template_Toggle;
         private GameObject m_ToggleTemplateInstance;
         [SerializeField] private Text m_Detail;
-        
-        public void Start()
+
+        public void Awake()
         {
+            base.Awake();
             m_ButtonBack.onClick.AddListener(OnClickBack);
             m_QuestTemplateInstance = Instantiate(m_Template_Quest);
             Destroy(m_Template_Quest);
@@ -33,7 +34,10 @@ namespace Code.Views
             Destroy(m_Template_Exchange);
             m_ToggleTemplateInstance = Instantiate(m_Template_Toggle);
             Destroy(m_Template_Toggle);
-
+        }
+        
+        public void Start()
+        {
             UpdateActivityTabs();
             UpdateSelectedActivity();
         }

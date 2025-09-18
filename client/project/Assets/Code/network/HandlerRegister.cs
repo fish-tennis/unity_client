@@ -203,7 +203,11 @@ namespace Code.network
                                 Console.WriteLine("not find view, message" + message.GetType().Name + " name:" + methodData.ViewName);
                                 return false;
                             }
-                            method.Invoke(view, parameters); // view上的成员函数
+                            method.Invoke(view, parameters); // view上的成员函数 
+                            // if (view.gameObject.activeSelf)
+                            // {
+                            //     method.Invoke(view, parameters); // view上的成员函数 
+                            // }
                         }
                     }
                 }

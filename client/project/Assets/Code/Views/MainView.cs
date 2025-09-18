@@ -17,13 +17,17 @@ namespace Code.Views
         [SerializeField] private Button Button_Quest;
         [SerializeField] private Button Button_Activity;
 
-        public void Start()
+        public void Awake()
         {
+            base.Awake();
             Button_Cmd.onClick.AddListener(OnClickCmd);
             Button_Bag.onClick.AddListener(OnClickBag);
             Button_Quest.onClick.AddListener(OnClickQuest);
             Button_Activity.onClick.AddListener(OnClickActivity);
-            
+        }
+
+        public void Start()
+        {
             ShowView("MainView");
             UpdatePlayerInfo();
         }
