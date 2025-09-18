@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 用于活动标签的绑定数据(toggle)
-    public class ActivityBindingData : MonoBehaviour, IBindingData<Activity,int>
+    public class ActivityControl : MonoBehaviour, IControlScript<Activity,int>
     {
         [SerializeField] private Text m_ActivityName;
 
@@ -18,7 +18,7 @@ namespace Code.Controls
 
         public Activity BindingData { get; set; }
 
-        public int GetCfgId()
+        public int GetKey()
         {
             return BindingData?.Id ?? 0;
         }

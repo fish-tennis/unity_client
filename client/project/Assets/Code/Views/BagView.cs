@@ -114,7 +114,7 @@ namespace Code.Views
                     }
                     break;
             }
-            ControlUtil.UpdateListView<long,ItemShowData,ItemBindingData>(m_Content, m_TemplateInstance,
+            ControlUtil.UpdateContainer<long,ItemShowData,ItemControl>(m_Content, m_TemplateInstance,
                 itemDatas,x=>x.UniqueId);
         }
         

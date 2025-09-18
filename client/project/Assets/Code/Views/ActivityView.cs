@@ -22,6 +22,7 @@ namespace Code.Views
         [SerializeField] private ToggleGroup m_ToggleGroup_Names;
         [SerializeField] private GameObject m_Template_Toggle;
         private GameObject m_ToggleTemplateInstance;
+        [SerializeField] private Text m_Detail;
         
         public void Start()
         {
@@ -48,7 +49,7 @@ namespace Code.Views
         {
             Debug.Log("UpdateActivityTabs");
             var activities = Client.Instance.Player.GetActivities();
-            ControlUtil.UpdateToggleGroup<Activity,ActivityBindingData>(m_ToggleGroup_Names, m_ToggleTemplateInstance,
+            ControlUtil.UpdateToggleGroup<Activity,ActivityControl>(m_ToggleGroup_Names, m_ToggleTemplateInstance,
                 activities.m_Activities,x=>x.Id, OnToggleValueChanged);
         }
 
@@ -71,14 +72,16 @@ namespace Code.Views
             {
                 return;
             }
+
+            m_Detail.text = "活动详情:" + activity.m_Cfg.Detail;
             // 该活动的任务
             var filteredQuests = activity.GetQuests(true);
-            ControlUtil.UpdateListView<int,Gserver.QuestData,QuestBindingData>(m_Content_Quest, m_QuestTemplateInstance,
+            ControlUtil.UpdateContainer<int,Gserver.QuestData,QuestControl>(m_Content_Quest, m_QuestTemplateInstance,
                 filteredQuests,x=>x.CfgId);
             
             // 该活动的兑换礼包
             var filteredExchanges = activity.GetExchangeRecords(true);
-            ControlUtil.UpdateListView<int,Gserver.ExchangeRecord,ExchangeBindingData>(m_Content_Exchange, m_ExchangeTemplateInstance,
+            ControlUtil.UpdateContainer<int,Gserver.ExchangeRecord,ExchangeControl>(m_Content_Exchange, m_ExchangeTemplateInstance,
                 filteredExchanges,x=>x.CfgId);
         }
 

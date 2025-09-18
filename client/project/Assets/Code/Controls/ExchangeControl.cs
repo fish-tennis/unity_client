@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace Code.Controls
 {
     // 兑换绑定数据
-    public class ExchangeBindingData : MonoBehaviour, IBindingData<Gserver.ExchangeRecord,int>
+    public class ExchangeControl : MonoBehaviour, IControlScript<Gserver.ExchangeRecord,int>
     {
         [SerializeField] private Text m_ExchangeName;
         [SerializeField] private Text m_ExchangeCount;
@@ -24,7 +24,7 @@ namespace Code.Controls
 
         public ExchangeRecord BindingData { get; set; }
 
-        public int GetCfgId()
+        public int GetKey()
         {
             return BindingData?.CfgId ?? 0;
         }

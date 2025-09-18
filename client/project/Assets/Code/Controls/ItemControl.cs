@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Code.cfg;
 using Code.game;
 using Gserver;
@@ -17,7 +18,7 @@ namespace Code.Controls
     }
     
     // 物品绑定数据
-    public class ItemBindingData : MonoBehaviour, IBindingData<ItemShowData,long>
+    public class ItemControl : MonoBehaviour, IControlScript<ItemShowData,long>
     {
         [SerializeField] private Text m_ItemName;
         [SerializeField] private Text m_Num;
@@ -29,7 +30,7 @@ namespace Code.Controls
         
         public ItemShowData BindingData { get; set; }
 
-        public long GetCfgId()
+        public long GetKey()
         {
             return BindingData?.UniqueId ?? 0;
         }
@@ -47,9 +48,42 @@ namespace Code.Controls
             }
             else
             {
+                UpdateEndTime();
+                // m_Num.text = "";
+            }
+        }
+
+        // 更新限时物品的倒计时
+        public void UpdateEndTime()
+        {
+            if (BindingData == null || BindingData.Data == null)
+            {
+                return;
+            }
+            int endTimestamp = 0;
+            switch (BindingData.Data)
+            {
+                case Gserver.UniqueCountItem uniqueCountItem:
+                    endTimestamp = uniqueCountItem.Timeout;
+                    break;
+                case Gserver.Equip equip:
+                    endTimestamp = equip.Timeout;
+                    break;
+            }
+            if (endTimestamp > 0)
+            {
+                m_Num.text = DateTimeOffset.FromUnixTimeSeconds(endTimestamp).ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            else
+            {
                 m_Num.text = "";
             }
         }
-        
+
+        // 如果是倒计时显示,就需要在这里更新
+        // public void Update()
+        // {
+        //     UpdateEndTime();
+        // }
     }
 }

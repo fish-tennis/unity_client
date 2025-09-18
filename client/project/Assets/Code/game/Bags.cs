@@ -64,7 +64,6 @@ namespace Code.game
                 default:
                     return null;
             }
-            return null;
         }
 
         public int GetItemCount(int itemCfgId)

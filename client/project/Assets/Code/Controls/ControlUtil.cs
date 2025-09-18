@@ -11,24 +11,24 @@ namespace Code.Controls
     // 通用的控件接口
     public static class ControlUtil
     {
-        // 通用的刷新列表操作(如任务列表)
-        public static void UpdateListView<TKey,TData,TBindingData>(Transform content, GameObject template,
-            Dictionary<TKey,TData> dataDict, Func<TData,TKey> cfgIdGetter) where TBindingData:IBindingData<TData,TKey>
+        // 通用的刷新容器操作(如任务列表,背包等)
+        public static void UpdateContainer<TKey,TData,TBindingData>(Transform content, GameObject template,
+            Dictionary<TKey,TData> dataDict, Func<TData,TKey> cfgIdGetter) where TBindingData:IControlScript<TData,TKey>
         {
-            Debug.Log($"UpdateListView Count:{dataDict.Count}");
+            Debug.Log($"UpdateContainer Count:{dataDict.Count}");
             var existsBindingData = new HashSet<TKey>();
             foreach (Transform child in content)
             {
                 var bindingData = child.GetComponent<TBindingData>();
-                var cfgId = bindingData.GetCfgId();
-                if (!dataDict.ContainsKey(cfgId))
+                var key = bindingData.GetKey();
+                if (!dataDict.ContainsKey(key))
                 {
-                    Debug.Log($"UpdateListView remove exists:{cfgId}");
+                    Debug.Log($"UpdateContainer remove exists:{key}");
                     UnityEngine.Object.Destroy(child.gameObject); // 移除已经不在当前列表的数据
                     continue;
                 }
-                existsBindingData.Add(cfgId);
-                bindingData.BindingData = dataDict[cfgId];
+                existsBindingData.Add(key);
+                bindingData.BindingData = dataDict[key];
                 bindingData.UpdateUI(); // NOTE: 暂时没细化 不管数据是否更新了都刷新一次
             }
             foreach (var data in dataDict.Values)
@@ -44,7 +44,7 @@ namespace Code.Controls
                 var bindingData = newNode.GetComponent<TBindingData>();
                 bindingData.BindingData = data;
                 bindingData.UpdateUI();
-                Debug.Log($"UpdateListView add:{cfgId}");
+                Debug.Log($"UpdateContainer add:{cfgId}");
             }
         }
         
@@ -53,7 +53,7 @@ namespace Code.Controls
         // 更新ToggleGroup
         public static void UpdateToggleGroup<TData,TBindingData>(ToggleGroup toggleGroup, GameObject template,
             Dictionary<int,TData> dataDict, Func<TData,int> cfgIdGetter, Action<Toggle,bool> onToggleValueChanged)
-            where TBindingData:IBindingData<TData,int>
+            where TBindingData:IControlScript<TData,int>
         {
             Debug.Log($"UpdateToggleGroup Count:{dataDict.Count}");
             var existsBindingData = new HashSet<int>();
@@ -61,10 +61,10 @@ namespace Code.Controls
             foreach (Transform child in toggleGroup.transform)
             {
                 var bindingData = child.GetComponent<TBindingData>();
-                var cfgId = bindingData?.GetCfgId() ?? 0;
-                if (!dataDict.ContainsKey(cfgId))
+                var key = bindingData?.GetKey() ?? 0;
+                if (!dataDict.ContainsKey(key))
                 {
-                    Debug.Log($"UpdateToggleGroup remove exists:{cfgId}");
+                    Debug.Log($"UpdateToggleGroup remove exists:{key}");
                     var toggle = child.GetComponent<Toggle>();
                     if (toggle.isOn)
                     {
@@ -74,8 +74,8 @@ namespace Code.Controls
                     UnityEngine.Object.Destroy(child.gameObject); // 移除已经不在当前列表的数据
                     continue;
                 }
-                existsBindingData.Add(cfgId);
-                bindingData.BindingData = dataDict[cfgId];
+                existsBindingData.Add(key);
+                bindingData.BindingData = dataDict[key];
                 bindingData.UpdateUI(); // NOTE: 暂时没细化 不管数据是否更新了都刷新一次
             }
             foreach (var data in dataDict.Values)
