@@ -154,7 +154,7 @@ namespace gnet_csharp
             {
                 var messageBytes = messageBuffer.ToArray();
                 var protoMessage = messageDescriptor.Parser.ParseFrom(messageBytes);
-                return new ProtoPacket(command, protoMessage);
+                return new ProtoPacket(command, protoMessage, errorCode);
             }
             catch (Exception e)
             {
