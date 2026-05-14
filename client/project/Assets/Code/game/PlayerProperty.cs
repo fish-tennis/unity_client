@@ -2,7 +2,7 @@
 
 namespace Code.game
 {
-    using PlayerPropertyGetter = System.Func<Player, string, int>;
+    using PlayerPropertyGetter = System.Func<Player, string, Gserver.ConditionCfg, int>;
     using PlayerPropertyGetterString = System.Func<Player, string, string>;
     
     public static class PlayerProperty
@@ -12,10 +12,10 @@ namespace Code.game
         // 由Player.GetPropertyInt32调用
         public static Dictionary<string,PlayerPropertyGetter> Getters = new Dictionary<string, PlayerPropertyGetter>
         {
-            {"Level",(player,_)=> player.BaseInfo.data?.Level??0}, // 等级
-            {"Exp",(player,_)=> player.BaseInfo.data?.Exp??0}, // 等级
-            {"TotalPay",(player,_)=> player.BaseInfo.data?.TotalPay??0}, // 总支付金额
-            {"FinishQuestCount",(player,_)=> player.GetQuest().Finished.Count}, // 完成任务数量
+            {"Level",(player,propertyName,conditionCfg)=> player.BaseInfo.data.Level}, // 等级
+            {"Exp",(player,propertyName,conditionCfg)=> player.BaseInfo.data?.Exp??0}, // 等级
+            {"TotalPay",(player,propertyName,conditionCfg)=> player.BaseInfo.data?.TotalPay??0}, // 总支付金额
+            {"FinishQuestCount",(player,propertyName,conditionCfg)=> player.GetQuest().Finished.Count}, // 完成任务数量
         };
         
         public static Dictionary<string,PlayerPropertyGetterString> StringGetters = new Dictionary<string, PlayerPropertyGetterString>

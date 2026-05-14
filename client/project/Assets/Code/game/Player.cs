@@ -60,9 +60,9 @@ namespace Code.game
         
         // 获取玩家数据上的int32属性值
         // IPropertyInt32的实现
-        public int GetPropertyInt32(string property)
+        public int GetPropertyInt32(string property, Gserver.ConditionCfg conditionCfg)
         {
-            return PlayerProperty.Getters.TryGetValue(property, out var getter) ? getter(this, property) : 0;
+            return PlayerProperty.Getters.TryGetValue(property, out var getter) ? getter(this, property, conditionCfg) : 0;
         }
         
         public string GetPropertyString(string property)
@@ -75,7 +75,7 @@ namespace Code.game
         {
             if (PlayerProperty.Getters.TryGetValue(property, out var getter))
             {
-                return getter(this, property);
+                return getter(this, property, null);
             }
             if (PlayerProperty.StringGetters.TryGetValue(property, out var stringGetter))
             {
