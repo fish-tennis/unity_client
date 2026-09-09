@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Code.cfg;
 using Code.game;
@@ -60,7 +60,7 @@ namespace Code.Controls
             {
                 return;
             }
-            int endTimestamp = 0;
+            long endTimestamp = 0;
             switch (BindingData.Data)
             {
                 case Gserver.UniqueCountItem uniqueCountItem:
