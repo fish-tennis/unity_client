@@ -25,7 +25,7 @@ namespace Code.game
 
         // 获取活动数据上的int32属性值(先查找m_Data,如果没有再查找该活动配置的Properties)
         // IPropertyInt32的实现
-        // NOTE:条件接口是int32的,而m_Data.PropertiesInt的属性值是int64的,int64的属性主要考虑活动自身逻辑的扩展需求,而不是条件和进度
+        // NOTE:条件接口是int32的,而m_Data.Properties的属性值是int64的,int64的属性主要考虑活动自身逻辑的扩展需求,而不是条件和进度
         public int GetPropertyInt32(string property, Gserver.ConditionCfg conditionCfg)
         {
             // 1.先找注册的属性接口
@@ -36,7 +36,7 @@ namespace Code.game
             // 2.再找活动数据上的属性值(key为Gserver.ActivityPropertyId枚举值)
             if (System.Enum.TryParse<Gserver.ActivityPropertyId>(property, out var propertyId) && propertyId != Gserver.ActivityPropertyId.None)
             {
-                if (m_Data.PropertiesInt.TryGetValue((int)propertyId, out var value))
+                if (m_Data.Properties.TryGetValue((int)propertyId, out var value))
                 {
                     return (int)value;
                 }
@@ -45,22 +45,17 @@ namespace Code.game
             return GetCfgPropertyInt32(property);
         }
 
-        // 获取活动配置的int32属性值
+        // 获取活动配置的int32属性值(key为Gserver.ActivityPropertyId枚举值)
         public int GetCfgPropertyInt32(string property)
         {
-            if(!m_Cfg.Properties.TryGetValue(property, out var value))
+            if (System.Enum.TryParse<Gserver.ActivityPropertyId>(property, out var propertyId) && propertyId != Gserver.ActivityPropertyId.None)
             {
-                return 0;
+                if (m_Cfg.Properties.TryGetValue((int)propertyId, out var value))
+                {
+                    return (int)value;
+                }
             }
-            int.TryParse(value, out var i);
-            return i;
-        }
-
-        // 获取活动配置的string属性值
-        public string GetCfgPropertyString(string property)
-        {
-            m_Cfg.Properties.TryGetValue(property, out var value);
-            return value;
+            return 0;
         }
 
         // 当前是参加这个活动的第几天,从1开始
