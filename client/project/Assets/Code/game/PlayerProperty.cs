@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Code.game
 {
     using PlayerPropertyGetter = System.Func<Player, string, Gserver.ConditionCfg, int>;
     using PlayerPropertyGetterString = System.Func<Player, string, string>;
-    
+
     public static class PlayerProperty
     {
         // 玩家属性值接口 提供一个统一的属性值查询接口

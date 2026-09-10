@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Code.cfg;
 
@@ -25,6 +25,7 @@ namespace Code.game
 
         // 获取活动数据上的int32属性值(先查找m_Data,如果没有再查找该活动配置的Properties)
         // IPropertyInt32的实现
+        // NOTE:条件接口是int32的,而m_Data.PropertiesInt的属性值是int64的,int64的属性主要考虑活动自身逻辑的扩展需求,而不是条件和进度
         public int GetPropertyInt32(string property, Gserver.ConditionCfg conditionCfg)
         {
             // 1.先找注册的属性接口
@@ -32,9 +33,16 @@ namespace Code.game
             {
                 return getter(this, property, conditionCfg);
             }
-            // 2.再找活动数据上的属性值
+            // 2.再找活动数据上的属性值(key为Gserver.ActivityPropertyId枚举值)
+            if (System.Enum.TryParse<Gserver.ActivityPropertyId>(property, out var propertyId) && propertyId != Gserver.ActivityPropertyId.None)
+            {
+                if (m_Data.PropertiesInt.TryGetValue((int)propertyId, out var value))
+                {
+                    return (int)value;
+                }
+            }
             // 3.再找活动配置上的属性值
-            return m_Data.PropertiesInt32.TryGetValue(property, out var value) ? value : GetCfgPropertyInt32(property);
+            return GetCfgPropertyInt32(property);
         }
 
         // 获取活动配置的int32属性值
